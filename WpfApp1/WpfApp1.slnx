@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../WorkWithDataBase/WorkWithDataBase.csproj" Id="4d17fea0-78be-4b80-87e3-fab0b18f390e" />
+  <Project Path="WpfApp1.csproj" Id="18ea648d-b0b4-4194-97b1-a02c0300ce91" />
+</Solution>
