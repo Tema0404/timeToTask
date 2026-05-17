@@ -7,8 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using WorkWithDataBase;
+using WpfApp1;
 
 namespace HabitCalendar
 {
@@ -21,10 +22,13 @@ namespace HabitCalendar
         private readonly List<MonthItem> _months;
         private bool _isDarkTheme = false;
 
+        private PostgreSql _db;
+        private int _currentUserId = 1;
         public MainWindow()
         {
             InitializeComponent();
 
+            _db = new PostgreSql("Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;");
             _currentMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             _selectedDate = null;
 
@@ -52,6 +56,17 @@ namespace HabitCalendar
 
             ApplyTheme(false);
             RefreshCalendar();
+            
+            LoadTasksFromDb();
+            ApplyTheme(false);
+            RefreshCalendar();
+        }
+        private void LoadTasksFromDb()
+        {
+            _allTasks.Clear();
+            var tasksFromDb = _db.GetTasksByUser(_currentUserId);
+            foreach (var t in tasksFromDb)
+                _allTasks.Add(t);
         }
 
         private void ApplyTheme(bool isDark)
@@ -320,9 +335,15 @@ namespace HabitCalendar
             if (sender is CheckBox cb && cb.Tag is TaskItem task && _selectedDate.HasValue)
             {
                 if (cb.IsChecked == true)
+                {
                     task.MarkCompleted(_selectedDate.Value);
+                    _db.AddCompletion(task.Id, _selectedDate.Value);
+                }
                 else
+                {
                     task.MarkNotCompleted(_selectedDate.Value);
+                    _db.RemoveCompletion(task.Id, _selectedDate.Value);
+                }
                 RefreshCalendar();
             }
         }
@@ -334,10 +355,14 @@ namespace HabitCalendar
                 if (task.IsPermanent)
                 {
                     if (!task.ExcludedDates.Contains(_selectedDate.Value.Date))
+                    {
                         task.ExcludedDates.Add(_selectedDate.Value.Date);
+                        _db.AddExcludedDate(task.Id, _selectedDate.Value);
+                    }
                 }
                 else
                 {
+                    _db.DeleteTask(task.Id);
                     _allTasks.Remove(task);
                 }
                 FillTasksPanel(_selectedDate.Value);
@@ -353,6 +378,7 @@ namespace HabitCalendar
                 if (result != null)
                 {
                     task.Note = result;
+                    _db.UpdateTaskNote(task.Id, result);
                     if (_selectedDate.HasValue) FillTasksPanel(_selectedDate.Value);
                 }
             }
@@ -366,6 +392,7 @@ namespace HabitCalendar
                 if (!string.IsNullOrWhiteSpace(result))
                 {
                     task.Description = result;
+                    _db.UpdateTaskDescription(task.Id, result);
                     if (_selectedDate.HasValue) FillTasksPanel(_selectedDate.Value);
                 }
             }
@@ -378,6 +405,7 @@ namespace HabitCalendar
                 if (MessageBox.Show($"Полностью удалить задачу «{task.Description}»?",
                     "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
+                    _db.DeleteTask(task.Id);
                     _allTasks.Remove(task);
                     if (_selectedDate.HasValue) FillTasksPanel(_selectedDate.Value);
                     RefreshCalendar();
@@ -423,31 +451,41 @@ namespace HabitCalendar
 
             bool isPermanent = PermanentCheckBox.IsChecked == true;
             DateTime? month = isPermanent ? (MonthComboBox.SelectedValue as DateTime?) : null;
+            string recurringDaysStr = isPermanent
+                ? string.Join(",", _dayItems.Where(d => d.IsSelected).Select(d => d.Day.ToString()))
+                : null;
+            string excludedDatesStr = null; // в начале нет исключений
+
+            int newId = _db.AddFullTask(
+                _currentUserId,
+                desc,
+                desc, // описание и имя пока одинаковы, можно разделить
+                isPermanent ? (DateTime?)null : _selectedDate,
+                isPermanent,
+                recurringDaysStr,
+                month,
+                excludedDatesStr
+            );
 
             var task = new TaskItem
             {
+                Id = newId,
                 Description = desc,
-                Date = isPermanent ? (DateTime?)null : _selectedDate.Value,
+                Note = null,
+                Date = isPermanent ? null : _selectedDate,
                 IsPermanent = isPermanent,
                 RecurringDays = isPermanent
                     ? _dayItems.Where(d => d.IsSelected).Select(d => d.Day).ToList()
                     : new List<DayOfWeek>(),
-                Month = month
+                Month = month,
+                ExcludedDates = new List<DateTime>()
             };
-
-            if (isPermanent && task.RecurringDays.Count == 0)
-            {
-                MessageBox.Show("Выберите хотя бы один день недели для постоянной задачи.");
-                return;
-            }
 
             _allTasks.Add(task);
             FillTasksPanel(_selectedDate.Value);
             AddTaskPanel.Visibility = Visibility.Collapsed;
             ShowAddPanelButton.Visibility = _selectedDate.Value.Date < DateTime.Today ? Visibility.Collapsed : Visibility.Visible;
             RefreshCalendar();
-
-
         }
 
         private void TaskTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -486,70 +524,7 @@ namespace HabitCalendar
     }
 
     // ---------- Модели данных ----------
-    public class TaskItem : INotifyPropertyChanged
-    {
-        public string Description { get; set; }
-        public DateTime? Date { get; set; }
-        public bool IsPermanent { get; set; }
-        public List<DayOfWeek> RecurringDays { get; set; } = new List<DayOfWeek>();
-        public string Note { get; set; }
-        public DateTime? Month { get; set; }
-        public List<DateTime> ExcludedDates { get; set; } = new List<DateTime>();
 
-        private bool _isCompleted;
-        public bool IsCompleted
-        {
-            get => _isCompleted;
-            set { _isCompleted = value; OnPropertyChanged(); }
-        }
-
-        public List<DateTime> CompletedDates { get; set; } = new List<DateTime>();
-
-        public bool IsCompletedOnDate(DateTime date)
-        {
-            if (ExcludedDates.Contains(date.Date))
-                return false;
-            if (!IsPermanent && Date.HasValue && Date.Value.Date == date.Date)
-                return IsCompleted;
-            if (IsPermanent)
-            {
-                if (Month.HasValue && new DateTime(date.Year, date.Month, 1) != Month.Value)
-                    return false;
-                if (RecurringDays.Contains(date.DayOfWeek))
-                    return CompletedDates.Any(d => d.Date == date.Date);
-            }
-            return false;
-        }
-
-        public void MarkCompleted(DateTime date)
-        {
-            if (ExcludedDates.Contains(date.Date))
-                return;
-            if (!IsPermanent && Date.HasValue && Date.Value.Date == date.Date)
-                IsCompleted = true;
-            else if (IsPermanent && RecurringDays.Contains(date.DayOfWeek) &&
-                     !CompletedDates.Any(d => d.Date == date.Date))
-                CompletedDates.Add(date.Date);
-        }
-
-        public void MarkNotCompleted(DateTime date)
-        {
-            if (ExcludedDates.Contains(date.Date))
-                return;
-            if (!IsPermanent && Date.HasValue && Date.Value.Date == date.Date)
-                IsCompleted = false;
-            else if (IsPermanent && RecurringDays.Contains(date.DayOfWeek))
-            {
-                var existing = CompletedDates.FirstOrDefault(d => d.Date == date.Date);
-                if (existing != default)
-                    CompletedDates.Remove(existing);
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
 
     public class DayItem : INotifyPropertyChanged
     {
