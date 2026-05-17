@@ -1,0 +1,236 @@
+﻿<Window x:Class="HabitCalendar.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Трекер привычек" Height="580" Width="680"
+        WindowStartupLocation="CenterScreen"
+        Background="#FFF5F0">
+    <Window.Resources>
+        <Style x:Key="NavButton" TargetType="Button">
+            <Setter Property="Background" Value="#EED9C4"/>
+            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="4,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#DDBD9A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PastelButton" TargetType="Button">
+            <Setter Property="Background" Value="#EED9C4"/>
+            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="10,6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E4C8A8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SmallPastelButton" TargetType="Button" BasedOn="{StaticResource PastelButton}">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="6,3"/>
+        </Style>
+
+        <Style x:Key="PastelTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#FFFBF5"/>
+            <Setter Property="BorderBrush" Value="#D2BBA5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="CaretBrush" Value="#5D534C"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PastelComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="#FFFBF5"/>
+            <Setter Property="BorderBrush" Value="#D2BBA5"/>
+            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton" Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              Margin="3" VerticalAlignment="Center"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False">
+                                <Border Background="#FFFBF5" BorderBrush="#D2BBA5" BorderThickness="1" CornerRadius="6">
+                                    <ScrollViewer>
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="IconButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EED9C4"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DayButton" TargetType="Button">
+            <Setter Property="Background" Value="#FFFBF5"/>
+            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="BorderBrush" Value="#D2BBA5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F5E5D5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12">
+                <Button Content="◀" Width="30" Click="PreviousMonth_Click" Style="{StaticResource NavButton}"/>
+                <TextBlock x:Name="MonthYearText" Width="170" TextAlignment="Center"
+                           FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="#5D534C"/>
+                <Button Content="▶" Width="30" Click="NextMonth_Click" Style="{StaticResource NavButton}"/>
+            </StackPanel>
+
+            <UniformGrid Grid.Row="1" Columns="7" Margin="5,5,5,0">
+                <TextBlock Text="Пн" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#8B7D6B"/>
+                <TextBlock Text="Вт" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#8B7D6B"/>
+                <TextBlock Text="Ср" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#8B7D6B"/>
+                <TextBlock Text="Чт" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#8B7D6B"/>
+                <TextBlock Text="Пт" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#8B7D6B"/>
+                <TextBlock Text="Сб" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#CD853F"/>
+                <TextBlock Text="Вс" HorizontalAlignment="Center" FontWeight="Bold" Foreground="#CD853F"/>
+            </UniformGrid>
+
+            <UniformGrid x:Name="DaysGrid" Grid.Row="2" Columns="7" Margin="8"/>
+        </Grid>
+
+        <Popup x:Name="TaskPopup" AllowsTransparency="True" Placement="Bottom" StaysOpen="False"
+               Width="300" MaxHeight="450" PopupAnimation="Fade">
+            <Border Background="#FFFBF5" BorderBrush="#E6D3C2" BorderThickness="1" CornerRadius="16" Padding="0">
+                <Border.Effect>
+                    <DropShadowEffect Color="#AA9A8A" ShadowDepth="4" BlurRadius="12" Opacity="0.5"/>
+                </Border.Effect>
+                <StackPanel Margin="14">
+                    <TextBlock x:Name="PopupDateText" FontWeight="Bold" FontSize="15"
+                               Foreground="#5D534C" Margin="0,0,0,6"/>
+                    <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="TasksPanel"/>
+                    </ScrollViewer>
+                    <Button x:Name="ShowAddPanelButton" Content="✚ Добавить задачу"
+                            Click="ShowAddPanel_Click" Margin="0,8,0,0" Style="{StaticResource PastelButton}"/>
+                    <Border x:Name="AddTaskPanel" Visibility="Collapsed" Margin="0,8,0,0"
+                            Background="#FFF0E7" CornerRadius="10" Padding="10">
+                        <StackPanel>
+                            <TextBox x:Name="TaskTextBox" Text="Название задачи"
+                                     GotFocus="TaskTextBox_GotFocus" Margin="0,0,0,8"
+                                     Style="{StaticResource PastelTextBox}"/>
+                            <CheckBox x:Name="PermanentCheckBox" Content="Постоянная задача"
+                                      Checked="PermanentCheckBox_Changed" Unchecked="PermanentCheckBox_Changed"
+                                      Foreground="#5D534C"/>
+                            <ComboBox x:Name="DayOfWeekComboBox" Visibility="Collapsed" Margin="0,5"
+                                      Style="{StaticResource PastelComboBox}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}"
+                                                  IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                  Checked="DayCheckBox_Changed"
+                                                  Unchecked="DayCheckBox_Changed"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <!-- Новый ComboBox для выбора месяца действия постоянной задачи -->
+                            <ComboBox x:Name="MonthComboBox" Visibility="Collapsed" Margin="0,5"
+                                      Style="{StaticResource PastelComboBox}"
+                                      SelectionChanged="MonthComboBox_SelectionChanged"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,6,0,0">
+                                <Button Content="Сохранить" Click="AddTask_Click"
+                                        Style="{StaticResource SmallPastelButton}" Width="80"/>
+                                <Button Content="Отмена" Click="CancelAddTask_Click"
+                                        Style="{StaticResource SmallPastelButton}" Width="60" Margin="6,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Popup>
+    </Grid>
+</Window>

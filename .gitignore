@@ -1,2 +1,5 @@
 timeToTask/
 ConsoleApp1/
+/bin/
+/obj/
+.vs/

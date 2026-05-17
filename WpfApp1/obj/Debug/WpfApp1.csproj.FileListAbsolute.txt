@@ -1,0 +1,16 @@
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\bin\Debug\WpfApp1.exe.config
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\bin\Debug\WpfApp1.exe
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\bin\Debug\WpfApp1.pdb
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\WpfApp1.csproj.AssemblyReference.cache
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\MainWindow.baml
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\MainWindow.g.cs
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\App.g.cs
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\WpfApp1_MarkupCompile.cache
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\WpfApp1_MarkupCompile.lref
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\App.baml
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\WpfApp1.g.resources
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\WpfApp1.Properties.Resources.resources
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\WpfApp1.csproj.GenerateResource.cache
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\WpfApp1.csproj.CoreCompileInputs.cache
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\WpfApp1.exe
+C:\Users\artmn\Desktop\ГУАП\2 курс\МДК 02.01\taskToTime\taskToTime\WpfApp1\obj\Debug\WpfApp1.pdb
