@@ -26,9 +26,9 @@
         <StackPanel Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Orientation="Vertical">
             <TextBlock Text="Вход"  FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Top"/>
             <TextBlock Text="Логин" FontSize="24" TextAlignment="Center" Margin="20"/>
-            <TextBox Margin="5" Height="25" Width="150" FontSize="18"/>
+            <TextBox x:Name ="txtLogin" Margin="5" Height="25" Width="150" FontSize="18"/>
             <TextBlock Text="Пароль" FontSize="24" TextAlignment="Center" Margin="20"/>
-            <PasswordBox Margin="5" Height="25" Width="150" FontSize="18" PasswordChar="*"/>
+            <PasswordBox x:Name ="txtPassword" Margin="5" Height="25" Width="150" FontSize="18" PasswordChar="*"/>
             <Button x:Name="btnEnterAcc" Content="Войти" FontSize="24" Margin="20" Width="150" Height="35" Click="btnEnterAcc_Click"/>
             <TextBlock TextAlignment="Center" FontSize="20" Margin="20">
                 Нет аккаунта?

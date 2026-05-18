@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorkWithDataBase;
+using WpfApp1;
 
 namespace TimeToTask
 {
@@ -35,7 +37,31 @@ namespace TimeToTask
 
         private void btnEnterAcc_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
+            PostgreSql connect = new PostgreSql();
+            int uid = -1;
+
+            string login = txtLogin.Text;
+            string password = txtPassword.Password;
+   
+            uid = connect.GetUserId(login, password);
+            if (uid == -1)
+            {
+                MessageBox.Show(
+                    "Неверный логин или пароль",
+                    "Ошибка",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            UserItem currentUser = new UserItem(
+                uid, 
+                login, 
+                password,
+                connect.GetUserEmail(uid)
+            );
+
+            MainWindow mainWindow = new MainWindow(currentUser);
             mainWindow.Show();
             Application.Current.MainWindow = mainWindow;
             this.Close();

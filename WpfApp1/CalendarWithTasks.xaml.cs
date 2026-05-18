@@ -23,12 +23,13 @@ namespace TimeToTask
         private bool _isDarkTheme = false;
 
         private PostgreSql _db;
-        private int _currentUserId = 1;
-        public CalendarWithTasks()
+
+        private UserItem _currentUser;
+        public CalendarWithTasks(UserItem user)
         {
             InitializeComponent();
-
-            _db = new PostgreSql("Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;");
+            _currentUser = user;
+            _db = new PostgreSql();
             _currentMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             _selectedDate = null;
 
@@ -64,7 +65,7 @@ namespace TimeToTask
         private void LoadTasksFromDb()
         {
             _allTasks.Clear();
-            var tasksFromDb = _db.GetTasksByUser(_currentUserId);
+            var tasksFromDb = _db.GetTasksByUser(_currentUser.id);
             foreach (var t in tasksFromDb)
                 _allTasks.Add(t);
         }
@@ -457,7 +458,7 @@ namespace TimeToTask
             string excludedDatesStr = null; // в начале нет исключений
 
             int newId = _db.AddFullTask(
-                _currentUserId,
+                _currentUser.id,
                 desc,
                 desc, // описание и имя пока одинаковы, можно разделить
                 isPermanent ? (DateTime?)null : _selectedDate,

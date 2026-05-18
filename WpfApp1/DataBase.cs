@@ -14,11 +14,12 @@ namespace WorkWithDataBase
     }
     public class PostgreSql : DataBase
     {
-        public PostgreSql(string connectionString)
+
+        public PostgreSql()
         {
-            this.connectionString = connectionString;
+            
         }
-        private string connectionString;
+        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;";
 
         private void DoCommand(string InputCommand)
         {
@@ -96,7 +97,7 @@ namespace WorkWithDataBase
             string query = $"DELETE FROM tasks WHERE user_id = {uid} and id = {idTask}";
             DoCommand(query);
         }
-        public bool isUser(string login, string password)
+        private bool isUser(string login, string password)
         {
             using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
             {
@@ -106,6 +107,34 @@ namespace WorkWithDataBase
                 {
                     long count = (long)cmd.ExecuteScalar();
                     return count > 0;
+                }
+            }
+        }
+        public int GetUserId(string login, string password)
+        {
+            if (!isUser(login, password))
+                return -1;
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                string query = $"SELECT id FROM users WHERE login = '{login}' AND password = '{password}'";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                {
+                    object result = cmd.ExecuteScalar();
+                    return Convert.ToInt32(result);
+                }
+            }
+        }
+        public string GetUserEmail(int uid)
+        {
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                string query = $"SELECT mail FROM users WHERE id = {uid}";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                {
+                    object result = cmd.ExecuteScalar();
+                    return result.ToString();
                 }
             }
         }

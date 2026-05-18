@@ -122,6 +122,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UserItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -149,12 +150,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\taskToTime\TimeToTask\timeToTask\timeToTask.csproj">
-      <Project>{b38ec1d2-092f-b3ed-48ae-df96e4727c23}</Project>
-      <Name>timeToTask</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="CalendarWithTasks.xaml">

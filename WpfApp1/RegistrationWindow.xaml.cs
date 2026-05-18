@@ -11,12 +11,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WorkWithDataBase;
+using WpfApp1;
 
 namespace TimeToTask
 {
-    /// <summary>
-    /// Логика взаимодействия для RegistrationWindow.xaml
-    /// </summary>
     public partial class RegistrationWindow : Window
     {
         public RegistrationWindow()
@@ -26,8 +25,25 @@ namespace TimeToTask
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {
-            //Добавить код отвечающий за перенос данных в базу
-            CalendarWithTasks calendarWindow = new CalendarWithTasks();
+            string login = txtgLogin.Text;
+            string password = txtPassword.Password;
+            string mail = txtMail.Text;
+
+            //Добавить проверки корректности пароля, почты(нет повтора), логина(нет повтора)
+
+            PostgreSql connect = new PostgreSql();
+            connect.AddNewUser(login, mail, password);
+            int newUid = connect.GetUserId(login, password);
+            UserItem newUser = new UserItem(newUid, login, password, mail);
+
+            MessageBox.Show(
+                "Ваш аккаунт успешно создан",
+                "Успешная регистрация",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
+
+            CalendarWithTasks calendarWindow = new CalendarWithTasks(newUser);
             calendarWindow.Show();
             Application.Current.MainWindow = calendarWindow;
             this.Close();
