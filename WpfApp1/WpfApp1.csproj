@@ -104,6 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CommonItems.cs" />
     <Compile Include="DataBase.cs" />
     <Compile Include="CalendarWithTasks.xaml.cs">
       <DependentUpon>CalendarWithTasks.xaml</DependentUpon>

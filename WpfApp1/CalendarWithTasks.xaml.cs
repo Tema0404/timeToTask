@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -21,14 +20,17 @@ namespace TimeToTask
         private readonly ObservableCollection<DayItem> _dayItems;
         private readonly List<MonthItem> _months;
         private bool _isDarkTheme = false;
+        private static bool _globalDarkTheme = false;
 
         private PostgreSql _db;
-
         private UserItem _currentUser;
-        public CalendarWithTasks(UserItem user)
+        private MainWindow _mainWindow;
+
+        public CalendarWithTasks(UserItem user, MainWindow mainWindow = null)
         {
             InitializeComponent();
             _currentUser = user;
+            _mainWindow = mainWindow;
             _db = new PostgreSql();
             _currentMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             _selectedDate = null;
@@ -55,13 +57,22 @@ namespace TimeToTask
             MonthComboBox.DisplayMemberPath = "DisplayName";
             MonthComboBox.SelectedValuePath = "MonthDate";
 
-            ApplyTheme(false);
+            _isDarkTheme = _globalDarkTheme;
+            ThemeToggleBtn.IsChecked = _isDarkTheme;
+            ApplyTheme(_isDarkTheme);
             RefreshCalendar();
-            
             LoadTasksFromDb();
-            ApplyTheme(false);
             RefreshCalendar();
+
+            this.Closed += CalendarWithTasks_Closed;
         }
+
+        private void CalendarWithTasks_Closed(object sender, EventArgs e)
+        {
+            if (_mainWindow != null && !_mainWindow.IsClosed)
+                _mainWindow.Show();
+        }
+
         private void LoadTasksFromDb()
         {
             _allTasks.Clear();
@@ -73,6 +84,7 @@ namespace TimeToTask
         private void ApplyTheme(bool isDark)
         {
             _isDarkTheme = isDark;
+            _globalDarkTheme = isDark;
             var resources = Application.Current.Resources;
 
             if (isDark)
@@ -94,11 +106,7 @@ namespace TimeToTask
                 resources["PopupBorder"] = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55));
                 resources["AddPanelBackground"] = new SolidColorBrush(Color.FromRgb(0x4D, 0x4D, 0x4D));
                 resources["IconButtonHover"] = new SolidColorBrush(Color.FromRgb(0x4D, 0x4D, 0x4D));
-                resources["ToggleBackground"] = new SolidColorBrush(Color.FromRgb(0x4D, 0x4D, 0x4D));
-                resources["ToggleBorder"] = new SolidColorBrush(Color.FromRgb(0x80, 0x80, 0x80));
-                resources["ToggleThumb"] = new SolidColorBrush(Color.FromRgb(0x2B, 0x2B, 0x2B));
-                resources["ToggleThumbBorder"] = new SolidColorBrush(Color.FromRgb(0x80, 0x80, 0x80));
-                resources["ToggleIconColor"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xD7, 0x00));
+                Background = (Brush)resources["WindowBackground"];
             }
             else
             {
@@ -119,24 +127,13 @@ namespace TimeToTask
                 resources["PopupBorder"] = new SolidColorBrush(Color.FromRgb(0xE6, 0xD3, 0xC2));
                 resources["AddPanelBackground"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xF0, 0xE7));
                 resources["IconButtonHover"] = new SolidColorBrush(Color.FromRgb(0xEE, 0xD9, 0xC4));
-                resources["ToggleBackground"] = new SolidColorBrush(Color.FromRgb(0xEE, 0xD9, 0xC4));
-                resources["ToggleBorder"] = new SolidColorBrush(Color.FromRgb(0xD2, 0xBB, 0xA5));
-                resources["ToggleThumb"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xF5, 0xF0));
-                resources["ToggleThumbBorder"] = new SolidColorBrush(Color.FromRgb(0xD2, 0xBB, 0xA5));
-                resources["ToggleIconColor"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xA5, 0x00));
+                Background = (Brush)resources["WindowBackground"];
             }
             RefreshCalendar();
         }
 
-        private void ThemeToggleBtn_Checked(object sender, RoutedEventArgs e)
-        {
-            ApplyTheme(true);
-        }
-
-        private void ThemeToggleBtn_Unchecked(object sender, RoutedEventArgs e)
-        {
-            ApplyTheme(false);
-        }
+        private void ThemeToggleBtn_Checked(object sender, RoutedEventArgs e) => ApplyTheme(true);
+        private void ThemeToggleBtn_Unchecked(object sender, RoutedEventArgs e) => ApplyTheme(false);
 
         private void RefreshCalendar()
         {
@@ -296,15 +293,15 @@ namespace TimeToTask
             removeDayBtn.Click += RemoveTaskFromDay_Click;
             rightPanel.Children.Add(removeDayBtn);
 
-            Button noteBtn = new Button { Content = "📝", Style = (Style)FindResource("IconButton"), Tag = task };
+            Button noteBtn = new Button { Content = "📝", Style = (Style)FindResource("IconButton"), Tag = task, ToolTip = "Заметка" };
             noteBtn.Click += ShowNote_Click;
             rightPanel.Children.Add(noteBtn);
 
-            Button editBtn = new Button { Content = "✏️", Style = (Style)FindResource("IconButton"), Tag = task };
+            Button editBtn = new Button { Content = "✏️", Style = (Style)FindResource("IconButton"), Tag = task, ToolTip = "Редактировать" };
             editBtn.Click += EditTask_Click;
             rightPanel.Children.Add(editBtn);
 
-            Button deleteBtn = new Button { Content = "🗑️", Style = (Style)FindResource("IconButton"), Tag = task };
+            Button deleteBtn = new Button { Content = "🗑️", Style = (Style)FindResource("IconButton"), Tag = task, ToolTip = "Удалить" };
             deleteBtn.Click += DeleteTask_Click;
             rightPanel.Children.Add(deleteBtn);
 
@@ -455,18 +452,17 @@ namespace TimeToTask
             string recurringDaysStr = isPermanent
                 ? string.Join(",", _dayItems.Where(d => d.IsSelected).Select(d => d.Day.ToString()))
                 : null;
-            string excludedDatesStr = null; // в начале нет исключений
 
             int newId = _db.AddFullTask(
-                _currentUser.id,
-                desc,
-                desc, // описание и имя пока одинаковы, можно разделить
-                isPermanent ? (DateTime?)null : _selectedDate,
-                isPermanent,
-                recurringDaysStr,
-                month,
-                excludedDatesStr
-            );
+     _currentUser.id,
+     desc,
+     desc,
+     isPermanent ? null : (DateTime?)_selectedDate,
+     isPermanent,
+     recurringDaysStr,
+     month,
+     null
+    );
 
             var task = new TaskItem
             {
@@ -475,9 +471,7 @@ namespace TimeToTask
                 Note = null,
                 Date = isPermanent ? null : _selectedDate,
                 IsPermanent = isPermanent,
-                RecurringDays = isPermanent
-                    ? _dayItems.Where(d => d.IsSelected).Select(d => d.Day).ToList()
-                    : new List<DayOfWeek>(),
+                RecurringDays = isPermanent ? _dayItems.Where(d => d.IsSelected).Select(d => d.Day).ToList() : new List<DayOfWeek>(),
                 Month = month,
                 ExcludedDates = new List<DateTime>()
             };
@@ -522,100 +516,10 @@ namespace TimeToTask
             _currentMonth = _currentMonth.AddMonths(1);
             RefreshCalendar();
         }
-    }
 
-    // ---------- Модели данных ----------
-
-
-    public class DayItem : INotifyPropertyChanged
-    {
-        public DayOfWeek Day { get; set; }
-        public string Name { get; set; }
-
-        private bool _isSelected;
-        public bool IsSelected
+        private void BackToMainMenu_Click(object sender, RoutedEventArgs e)
         {
-            get => _isSelected;
-            set { _isSelected = value; OnPropertyChanged(); }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-
-    public class MonthItem
-    {
-        public DateTime MonthDate { get; set; }
-        public string DisplayName { get; set; }
-    }
-
-    // Простое диалоговое окно для ввода текста
-    public class InputDialog : Window
-    {
-        private TextBox _textBox;
-        public string Result { get; private set; }
-
-        public InputDialog(string title, string message, string defaultValue = "")
-        {
-            Title = title;
-            Width = 350;
-            Height = 150;
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            ResizeMode = ResizeMode.NoResize;
-            Background = (Brush)Application.Current.Resources["WindowBackground"];
-            BorderBrush = (Brush)Application.Current.Resources["BorderColor"];
-            BorderThickness = new Thickness(1);
-
-            Grid grid = new Grid();
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.Margin = new Thickness(10);
-
-            TextBlock prompt = new TextBlock
-            {
-                Text = message,
-                Foreground = (Brush)Application.Current.Resources["PrimaryTextColor"],
-                FontSize = 14,
-                Margin = new Thickness(0, 0, 0, 8)
-            };
-            Grid.SetRow(prompt, 0);
-
-            _textBox = new TextBox
-            {
-                Text = defaultValue,
-                Style = (Style)Application.Current.Resources["PastelTextBox"],
-                Height = 28
-            };
-            Grid.SetRow(_textBox, 1);
-
-            StackPanel buttons = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Margin = new Thickness(0, 10, 0, 0)
-            };
-            Button okBtn = new Button { Content = "OK", Width = 70, Style = (Style)Application.Current.Resources["SmallPastelButton"] };
-            Button cancelBtn = new Button { Content = "Отмена", Width = 70, Style = (Style)Application.Current.Resources["SmallPastelButton"], Margin = new Thickness(8, 0, 0, 0) };
-            okBtn.Click += (s, ev) => { Result = _textBox.Text; DialogResult = true; Close(); };
-            cancelBtn.Click += (s, ev) => { DialogResult = false; Close(); };
-            buttons.Children.Add(okBtn);
-            buttons.Children.Add(cancelBtn);
-            Grid.SetRow(buttons, 2);
-
-            grid.Children.Add(prompt);
-            grid.Children.Add(_textBox);
-            grid.Children.Add(buttons);
-            Content = grid;
-        }
-
-        public static string Show(string title, string message, string defaultValue = "")
-        {
-            InputDialog dialog = new InputDialog(title, message, defaultValue);
-            dialog.Owner = Application.Current.MainWindow;
-            bool? result = dialog.ShowDialog();
-            return (result == true) ? dialog.Result : null;
+            this.Close();
         }
     }
 }

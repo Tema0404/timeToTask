@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="Регистрация" Height="720" Width="1280"
         WindowState="Maximized"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource WindowBackground}">
     <Grid>
         <StackPanel Orientation="Vertical" Margin="500,100,500,100">
             <TextBlock Text="Регистрация" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Top"/>

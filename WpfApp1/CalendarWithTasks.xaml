@@ -5,6 +5,30 @@
         WindowStartupLocation="CenterScreen"
         Background="#FFF5F0">
     <Window.Resources>
+        <Style x:Key="NavToggleButton" TargetType="ToggleButton">
+            <Setter Property="Background" Value="#EED9C4"/>
+            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="4,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#DDBD9A"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#DDBD9A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style x:Key="NavButton" TargetType="Button">
             <Setter Property="Background" Value="#EED9C4"/>
             <Setter Property="Foreground" Value="#5D534C"/>
@@ -168,6 +192,10 @@
                 <TextBlock x:Name="MonthYearText" Width="170" TextAlignment="Center"
                            FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="#5D534C"/>
                 <Button Content="▶" Width="30" Click="NextMonth_Click" Style="{StaticResource NavButton}"/>
+                <ToggleButton x:Name="ThemeToggleBtn" Content="🌙" Width="40" Margin="15,0,5,0"
+                              Style="{StaticResource NavToggleButton}" Checked="ThemeToggleBtn_Checked"
+                              Unchecked="ThemeToggleBtn_Unchecked"/>
+                <Button Content="🏠 Главное меню" Click="BackToMainMenu_Click" Style="{StaticResource PastelButton}" Margin="10,0"/>
             </StackPanel>
 
             <UniformGrid Grid.Row="1" Columns="7" Margin="5,5,5,0">
@@ -217,7 +245,6 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <!-- Новый ComboBox для выбора месяца действия постоянной задачи -->
                             <ComboBox x:Name="MonthComboBox" Visibility="Collapsed" Margin="0,5"
                                       Style="{StaticResource PastelComboBox}"
                                       SelectionChanged="MonthComboBox_SelectionChanged"/>
