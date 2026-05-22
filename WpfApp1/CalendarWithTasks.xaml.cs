@@ -209,6 +209,8 @@ namespace TimeToTask
             {
                 if (t.IsPermanent)
                 {
+                    if (date.Date < DateTime.Today)
+                        return false;
                     if (t.Month.HasValue && new DateTime(date.Year, date.Month, 1) != t.Month.Value)
                         return false;
                     if (t.ExcludedDates.Contains(date.Date))
@@ -457,16 +459,26 @@ namespace TimeToTask
                 : null;
             string excludedDatesStr = null; // в начале нет исключений
 
-            int newId = _db.AddFullTask(
-                _currentUser.id,
-                desc,
-                desc, // описание и имя пока одинаковы, можно разделить
-                isPermanent ? (DateTime?)null : _selectedDate,
-                isPermanent,
-                recurringDaysStr,
-                month,
-                excludedDatesStr
-            );
+            int newId;
+
+            try
+            {
+                newId = _db.AddFullTask(
+                    _currentUser.id,
+                    desc,
+                    desc, // описание и имя пока одинаковы, можно разделить
+                    isPermanent ? (DateTime?)null : _selectedDate,
+                    isPermanent,
+                    recurringDaysStr,
+                    month,
+                    excludedDatesStr
+                );
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Ошибка при добавлении задачи: {ex.Message}");
+                return;
+            }
 
             var task = new TaskItem
             {
@@ -487,6 +499,8 @@ namespace TimeToTask
             AddTaskPanel.Visibility = Visibility.Collapsed;
             ShowAddPanelButton.Visibility = _selectedDate.Value.Date < DateTime.Today ? Visibility.Collapsed : Visibility.Visible;
             RefreshCalendar();
+
+            TaskPopup.IsOpen = false;
         }
 
         private void TaskTextBox_GotFocus(object sender, RoutedEventArgs e)
