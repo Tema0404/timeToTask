@@ -19,7 +19,7 @@ namespace WorkWithDataBase
         {
             
         }
-        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;";
+        private string connectionString = "Server=localhost; port=5432; Database=postgres; User Id=postgres; Password=nihao312;";
 
         private void DoCommand(string InputCommand)
         {
@@ -209,9 +209,10 @@ namespace WorkWithDataBase
         }
         public void UpdateTaskNote(int taskId, string note)
         {
-            string query = $"UPDATE tasks SET description = '{note}' WHERE id = {taskId}"; // или отдельное поле note
+            string query = $"UPDATE tasks SET description = '{note}' WHERE id = {taskId}";
             DoCommand(query);
         }
+
         public void AddCompletion(int taskId, DateTime date)
         {
             string query = $"INSERT INTO task_completions (task_id, completion_date) VALUES ({taskId}, '{date:yyyy-MM-dd}') ON CONFLICT DO NOTHING";
@@ -256,7 +257,7 @@ namespace WorkWithDataBase
                                 Id = reader.GetInt32(0),
                                 Description = reader.GetString(1),
                                 Note = reader.IsDBNull(2) ? null : reader.GetString(2),
-                                Date = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
+                                Date = reader.IsDBNull(3) ? null : (DateTime?)reader.GetDateTime(3),
                                 IsPermanent = reader.GetBoolean(4),
                                 RecurringDays = reader.IsDBNull(5)
                                     ? new List<DayOfWeek>()
