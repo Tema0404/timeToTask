@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using WorkWithDataBase;
 using WpfApp1;
 
@@ -26,9 +27,15 @@ namespace TimeToTask
         public MainWindow(UserItem user)
         {
             InitializeComponent();
+            
+            App.ThemeChanged += OnGlobalThemeChanged;
+            this.Closed += (s, e) => App.ThemeChanged -= OnGlobalThemeChanged;
             _currentUser = user;
             _db = new PostgreSql();
             DateText.Text = _today.ToString("dd MMMM yyyy, dddd");
+
+            App.ThemeChanged += OnGlobalThemeChanged;
+            this.Closed += (s, e) => App.ThemeChanged -= OnGlobalThemeChanged;
 
             _dayItems = new ObservableCollection<DayItem>
             {
@@ -52,11 +59,30 @@ namespace TimeToTask
             MonthComboBox.DisplayMemberPath = "DisplayName";
             MonthComboBox.SelectedValuePath = "MonthDate";
 
+            // Настройка анимации для кнопки темы
+            ThemeToggleBtn.RenderTransform = new RotateTransform();
+            ThemeToggleBtn.RenderTransformOrigin = new Point(0.5, 0.5);
+
             _isDarkTheme = _globalDarkTheme;
             ThemeToggleBtn.IsChecked = _isDarkTheme;
             ApplyTheme(_isDarkTheme);
             LoadTasks();
             this.Closed += (s, e) => IsClosed = true;
+        }
+
+
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            LoadTasks();
+
+            // Синхронизация темы при возврате в окно
+            if (_isDarkTheme != _globalDarkTheme)
+            {
+                ApplyTheme(_globalDarkTheme);
+                ThemeToggleBtn.IsChecked = _globalDarkTheme;
+            }
         }
 
         private void LoadTasks()
@@ -213,15 +239,15 @@ namespace TimeToTask
                 : null;
 
             int newId = _db.AddFullTask(
-    _currentUser.id,
-    desc,
-    desc,
-    isPermanent ? null : (DateTime?)_today,
-    isPermanent,
-    recurringDaysStr,
-    month,
-    null
-);
+                _currentUser.id,
+                desc,
+                desc,
+                isPermanent ? null : (DateTime?)_today,
+                isPermanent,
+                recurringDaysStr,
+                month,
+                null
+            );
 
             var task = new TaskItem
             {
@@ -269,57 +295,111 @@ namespace TimeToTask
             calendar.Show();
         }
 
-        private void ThemeToggleBtn_Checked(object sender, RoutedEventArgs e) => ApplyTheme(true);
-        private void ThemeToggleBtn_Unchecked(object sender, RoutedEventArgs e) => ApplyTheme(false);
+        // Анимация переключения темы
+        private async void AnimateThemeSwitch(bool toDark)
+        {
+            var btn = ThemeToggleBtn;
+            for (int i = 0; i <= 10; i++)
+            {
+                btn.RenderTransform = new RotateTransform(i * 36);
+                await System.Threading.Tasks.Task.Delay(15);
+            }
+            btn.Content = toDark ? "🌙" : "☀️";
+            btn.RenderTransform = new RotateTransform(0);
+        }
+
+        private void ThemeToggleBtn_Checked(object sender, RoutedEventArgs e)
+        {
+            SetTheme(true);
+        }
+
+        private void ThemeToggleBtn_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SetTheme(false);
+        }
 
         private void ApplyTheme(bool isDark)
         {
             _isDarkTheme = isDark;
             _globalDarkTheme = isDark;
             var resources = Application.Current.Resources;
+
             if (isDark)
             {
-                resources["WindowBackground"] = new SolidColorBrush(Color.FromRgb(0x2B, 0x2B, 0x2B));
-                resources["PrimaryTextColor"] = new SolidColorBrush(Color.FromRgb(0xE0, 0xE0, 0xE0));
-                resources["SecondaryTextColor"] = new SolidColorBrush(Color.FromRgb(0xA0, 0xA0, 0xA0));
-                resources["WeekendTextColor"] = new SolidColorBrush(Color.FromRgb(0xFF, 0x99, 0x66));
-                resources["NavButtonBackground"] = new SolidColorBrush(Color.FromRgb(0x3D, 0x3D, 0x3D));
-                resources["NavButtonHover"] = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55));
-                resources["PastelButtonBackground"] = new SolidColorBrush(Color.FromRgb(0x4D, 0x4D, 0x4D));
-                resources["PastelButtonHover"] = new SolidColorBrush(Color.FromRgb(0x66, 0x66, 0x66));
-                resources["InputBackground"] = new SolidColorBrush(Color.FromRgb(0x3D, 0x3D, 0x3D));
-                resources["BorderColor"] = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55));
-                resources["DayButtonBackground"] = new SolidColorBrush(Color.FromRgb(0x3D, 0x3D, 0x3D));
-                resources["DayButtonBorder"] = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55));
-                resources["DayButtonHover"] = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55));
-                resources["PopupBackground"] = new SolidColorBrush(Color.FromRgb(0x3D, 0x3D, 0x3D));
-                resources["PopupBorder"] = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55));
-                resources["AddPanelBackground"] = new SolidColorBrush(Color.FromRgb(0x4D, 0x4D, 0x4D));
-                resources["IconButtonHover"] = new SolidColorBrush(Color.FromRgb(0x4D, 0x4D, 0x4D));
-                Background = (Brush)resources["WindowBackground"];
+                // Основные цвета
+                resources["WindowBackground"] = new SolidColorBrush(Color.FromRgb(0x1A, 0x1B, 0x26));
+                resources["PrimaryTextColor"] = new SolidColorBrush(Color.FromRgb(0xF5, 0xF5, 0xF7));
+                resources["SecondaryTextColor"] = new SolidColorBrush(Color.FromRgb(0xC0, 0xC2, 0xE0));
+                resources["WeekendTextColor"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xB8, 0x6B));
+                resources["ButtonBackground"] = new SolidColorBrush(Color.FromRgb(0x2C, 0x2E, 0x3E));
+                resources["ButtonHover"] = new SolidColorBrush(Color.FromRgb(0x3B, 0x3E, 0x55));
+                resources["AccentColor"] = new SolidColorBrush(Color.FromRgb(0xFF, 0x9E, 0x64));
+                resources["AccentHover"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xB5, 0x82));
+                resources["InputBackground"] = new SolidColorBrush(Color.FromRgb(0x2C, 0x2E, 0x3E));
+                resources["BorderColor"] = new SolidColorBrush(Color.FromRgb(0x41, 0x48, 0x68));
+                resources["PopupBackground"] = new SolidColorBrush(Color.FromRgb(0x2C, 0x2E, 0x3E));
+                resources["PanelBackground"] = new SolidColorBrush(Color.FromRgb(0x24, 0x26, 0x35));
+                resources["DayButtonBackground"] = new SolidColorBrush(Color.FromRgb(0x2C, 0x2E, 0x3E));
+                resources["DayButtonBorder"] = new SolidColorBrush(Color.FromRgb(0x41, 0x48, 0x68));
+                resources["DayButtonHover"] = new SolidColorBrush(Color.FromRgb(0x3B, 0x3E, 0x55));
+                resources["IconButtonHover"] = new SolidColorBrush(Color.FromRgb(0x3B, 0x3E, 0x55));
             }
             else
             {
+                // Светлая пастельная схема
                 resources["WindowBackground"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xF5, 0xF0));
                 resources["PrimaryTextColor"] = new SolidColorBrush(Color.FromRgb(0x5D, 0x53, 0x4C));
                 resources["SecondaryTextColor"] = new SolidColorBrush(Color.FromRgb(0x8B, 0x7D, 0x6B));
                 resources["WeekendTextColor"] = new SolidColorBrush(Color.FromRgb(0xCD, 0x85, 0x3F));
-                resources["NavButtonBackground"] = new SolidColorBrush(Color.FromRgb(0xEE, 0xD9, 0xC4));
-                resources["NavButtonHover"] = new SolidColorBrush(Color.FromRgb(0xDD, 0xBD, 0x9A));
-                resources["PastelButtonBackground"] = new SolidColorBrush(Color.FromRgb(0xEE, 0xD9, 0xC4));
-                resources["PastelButtonHover"] = new SolidColorBrush(Color.FromRgb(0xE4, 0xC8, 0xA8));
+                resources["ButtonBackground"] = new SolidColorBrush(Color.FromRgb(0xEE, 0xD9, 0xC4));
+                resources["ButtonHover"] = new SolidColorBrush(Color.FromRgb(0xDD, 0xBD, 0x9A));
+                resources["AccentColor"] = new SolidColorBrush(Color.FromRgb(0xCD, 0x85, 0x3F));
+                resources["AccentHover"] = new SolidColorBrush(Color.FromRgb(0xB8, 0x6A, 0x44));
                 resources["InputBackground"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xFB, 0xF5));
                 resources["BorderColor"] = new SolidColorBrush(Color.FromRgb(0xD2, 0xBB, 0xA5));
+                resources["PopupBackground"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xFB, 0xF5));
+                resources["PanelBackground"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xF0, 0xE7));
                 resources["DayButtonBackground"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xFB, 0xF5));
                 resources["DayButtonBorder"] = new SolidColorBrush(Color.FromRgb(0xD2, 0xBB, 0xA5));
                 resources["DayButtonHover"] = new SolidColorBrush(Color.FromRgb(0xF5, 0xE5, 0xD5));
-                resources["PopupBackground"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xFB, 0xF5));
-                resources["PopupBorder"] = new SolidColorBrush(Color.FromRgb(0xE6, 0xD3, 0xC2));
-                resources["AddPanelBackground"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xF0, 0xE7));
                 resources["IconButtonHover"] = new SolidColorBrush(Color.FromRgb(0xEE, 0xD9, 0xC4));
-                Background = (Brush)resources["WindowBackground"];
             }
+
+            
+            this.Background = (Brush)resources["WindowBackground"];
+            
             RefreshTodayTasks();
         }
+
+        private void OnGlobalThemeChanged(bool isDark)
+        {
+            // если текущее состояние темы уже совпадает – не обновляем, чтобы избежать лишних вызовов
+            if (_isDarkTheme == isDark) return;
+
+            // обновляем состояние кнопки (без вызова события, чтобы не зациклиться)
+            ThemeToggleBtn.Checked -= ThemeToggleBtn_Checked;
+            ThemeToggleBtn.Unchecked -= ThemeToggleBtn_Unchecked;
+            ThemeToggleBtn.IsChecked = isDark;
+            ThemeToggleBtn.Checked += ThemeToggleBtn_Checked;
+            ThemeToggleBtn.Unchecked += ThemeToggleBtn_Unchecked;
+
+            // применяем тему
+            ApplyTheme(isDark);
+        }
+
+        private void SetTheme(bool isDark)
+        {
+            if (_isDarkTheme == isDark) return;
+
+            // Анимация (если есть)
+            AnimateThemeSwitch(isDark);
+
+            // Применяем тему в текущем окне
+            ApplyTheme(isDark);
+
+            // Оповещаем все остальные окна
+            App.NotifyThemeChanged(isDark);
+        }
+
     }
 }

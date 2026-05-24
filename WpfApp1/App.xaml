@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:TimeToTask"
              StartupUri="EntryWindow.xaml">
     <Application.Resources>
-        
+
         <!--  ГЛОБАЛЬНЫЕ КИСТИ (будут переопределяться при смене темы)  -->
         <SolidColorBrush x:Key="WindowBackground" Color="#FDF5F0"/>
         <SolidColorBrush x:Key="PrimaryTextColor" Color="#4A3B32"/>
@@ -17,8 +17,14 @@
         <SolidColorBrush x:Key="BorderColor" Color="#E0D0C0"/>
         <SolidColorBrush x:Key="PopupBackground" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="PanelBackground" Color="#FAF0E8"/>
-       
-        
+
+        <!--  ДОБАВЛЕННЫЕ РЕСУРСЫ (нужны для стилей в окнах)  -->
+        <SolidColorBrush x:Key="WeekendTextColor" Color="#CD853F"/>
+        <SolidColorBrush x:Key="IconButtonHover" Color="#EED9C4"/>
+        <SolidColorBrush x:Key="DayButtonBackground" Color="#FFFBF5"/>
+        <SolidColorBrush x:Key="DayButtonBorder" Color="#D2BBA5"/>
+        <SolidColorBrush x:Key="DayButtonHover" Color="#F5E5D5"/>
+
         <!--  СТИЛИ  -->
         <Style x:Key="NavButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
@@ -166,15 +172,15 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
+                    <Setter Property="Background" Value="{StaticResource IconButtonHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="DayButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource InputBackground}"/>
+            <Setter Property="Background" Value="{StaticResource DayButtonBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DayButtonBorder}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Template">
@@ -191,7 +197,17 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
+                    <Setter Property="Background" Value="{StaticResource DayButtonHover}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource PastelButton}">
+            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>

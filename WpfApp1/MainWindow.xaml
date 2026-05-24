@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Трекер привычек – Сегодня" Height="720" Width="1280"
         WindowState="Maximized" WindowStartupLocation="CenterScreen"
-        Background="#FFF5F0">
+        Background="{StaticResource WindowBackground}">
     <Window.Resources>
         <Style x:Key="NavToggleButton" TargetType="ToggleButton">
-            <Setter Property="Background" Value="#EED9C4"/>
-            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -22,16 +22,18 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#DDBD9A"/>
+                    <Setter Property="Background" Value="{StaticResource ButtonHover}"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="#DDBD9A"/>
+                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="Foreground" Value="White"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
+
         <Style x:Key="NavButton" TargetType="Button">
-            <Setter Property="Background" Value="#EED9C4"/>
-            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -46,14 +48,14 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#DDBD9A"/>
+                    <Setter Property="Background" Value="{StaticResource ButtonHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="PastelButton" TargetType="Button">
-            <Setter Property="Background" Value="#EED9C4"/>
-            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -68,7 +70,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#E4C8A8"/>
+                    <Setter Property="Background" Value="{StaticResource ButtonHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -79,13 +81,13 @@
         </Style>
 
         <Style x:Key="PastelTextBox" TargetType="TextBox">
-            <Setter Property="Background" Value="#FFFBF5"/>
-            <Setter Property="BorderBrush" Value="#D2BBA5"/>
+            <Setter Property="Background" Value="{StaticResource InputBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="#5D534C"/>
-            <Setter Property="CaretBrush" Value="#5D534C"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
+            <Setter Property="CaretBrush" Value="{StaticResource PrimaryTextColor}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -101,9 +103,9 @@
         </Style>
 
         <Style x:Key="PastelComboBox" TargetType="ComboBox">
-            <Setter Property="Background" Value="#FFFBF5"/>
-            <Setter Property="BorderBrush" Value="#D2BBA5"/>
-            <Setter Property="Foreground" Value="#5D534C"/>
+            <Setter Property="Background" Value="{StaticResource InputBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
             <Setter Property="Padding" Value="6,4"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -118,7 +120,7 @@
                                               Margin="3" VerticalAlignment="Center"/>
                             <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
                                    AllowsTransparency="True" Focusable="False">
-                                <Border Background="#FFFBF5" BorderBrush="#D2BBA5" BorderThickness="1" CornerRadius="6">
+                                <Border Background="{StaticResource InputBackground}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="6">
                                     <ScrollViewer>
                                         <ItemsPresenter/>
                                     </ScrollViewer>
@@ -133,14 +135,15 @@
         <Style x:Key="IconButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Width" Value="24"/>
-            <Setter Property="Height" Value="24"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -148,7 +151,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#EED9C4"/>
+                    <Setter Property="Background" Value="{StaticResource IconButtonHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -161,8 +164,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15">
-            <TextBlock x:Name="DateText" FontSize="24" FontWeight="Bold" Foreground="#5D534C" VerticalAlignment="Center"/>
-            <Button x:Name="btnToCalendar" Content="📅 Календарь" Margin="30,0,0,0" Click="btnToCalendar_Click" Style="{StaticResource PastelButton}"/>
+            <TextBlock x:Name="DateText" FontSize="24" FontWeight="Bold" Foreground="{StaticResource PrimaryTextColor}" VerticalAlignment="Center"/>
+            <Button x:Name="btnToCalendar" Content="📆 Календарь" Margin="30,0,0,0" Click="btnToCalendar_Click" Style="{StaticResource PastelButton}"/>
             <ToggleButton x:Name="ThemeToggleBtn" Content="🌙" Width="40" Margin="15,0,0,0"
                           Style="{StaticResource NavToggleButton}" Checked="ThemeToggleBtn_Checked"
                           Unchecked="ThemeToggleBtn_Unchecked"/>
@@ -171,10 +174,10 @@
         <ScrollViewer Grid.Row="1" Margin="30,10,30,30">
             <StackPanel>
                 <Button Content="✚ Добавить задачу" Click="ShowAddPanel_Click" HorizontalAlignment="Left" Margin="0,0,0,10" Style="{StaticResource PastelButton}"/>
-                <Border x:Name="AddTaskPanel" Visibility="Collapsed" Background="#FFF0E7" CornerRadius="10" Padding="10" Margin="0,0,0,10">
+                <Border x:Name="AddTaskPanel" Visibility="Collapsed" Background="{StaticResource PanelBackground}" CornerRadius="10" Padding="10" Margin="0,0,0,10">
                     <StackPanel>
                         <TextBox x:Name="TaskTextBox" Text="Название задачи" GotFocus="TaskTextBox_GotFocus" Style="{StaticResource PastelTextBox}" Margin="0,0,0,8"/>
-                        <CheckBox x:Name="PermanentCheckBox" Content="Постоянная задача" Checked="PermanentCheckBox_Changed" Unchecked="PermanentCheckBox_Changed" Foreground="#5D534C"/>
+                        <CheckBox x:Name="PermanentCheckBox" Content="Постоянная задача" Checked="PermanentCheckBox_Changed" Unchecked="PermanentCheckBox_Changed" Foreground="{StaticResource PrimaryTextColor}"/>
                         <ComboBox x:Name="DayOfWeekComboBox" Visibility="Collapsed" Margin="0,5" Style="{StaticResource PastelComboBox}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
@@ -194,8 +197,8 @@
                 <ItemsControl x:Name="TasksItemsControl">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="#FFFBF5" CornerRadius="8" Margin="0,4" Padding="10,8"
-                                    BorderBrush="#D2BBA5" BorderThickness="1">
+                            <Border Background="{StaticResource InputBackground}" CornerRadius="8" Margin="0,4" Padding="10,8"
+                                    BorderBrush="{StaticResource BorderColor}" BorderThickness="1">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -204,15 +207,15 @@
                                     <StackPanel Orientation="Horizontal">
                                         <CheckBox IsChecked="{Binding IsCompleted, Mode=TwoWay}" Tag="{Binding}"
                                                   Checked="TaskCheckBox_Changed" Unchecked="TaskCheckBox_Changed"
-                                                  VerticalAlignment="Center" Foreground="#5D534C"/>
-                                        <TextBlock Text="{Binding Description}" Margin="8,0,0,0" Foreground="#5D534C"
+                                                  VerticalAlignment="Center" Foreground="{StaticResource PrimaryTextColor}"/>
+                                        <TextBlock Text="{Binding Description}" Margin="8,0,0,0" Foreground="{StaticResource PrimaryTextColor}"
                                                    TextWrapping="Wrap" VerticalAlignment="Center"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                                         <Button Content="✕" Style="{StaticResource IconButton}" Tag="{Binding}" ToolTip="Убрать из этого дня" Click="RemoveTaskFromDay_Click"/>
-                                        <Button Content="📝" Style="{StaticResource IconButton}" Tag="{Binding}" ToolTip="Заметка" Click="ShowNote_Click"/>
-                                        <Button Content="✏️" Style="{StaticResource IconButton}" Tag="{Binding}" ToolTip="Редактировать" Click="EditTask_Click"/>
-                                        <Button Content="🗑️" Style="{StaticResource IconButton}" Tag="{Binding}" ToolTip="Удалить" Click="DeleteTask_Click"/>
+                                        <Button Content="📄" Style="{StaticResource IconButton}" Tag="{Binding}" ToolTip="Заметка" Click="ShowNote_Click"/>
+                                        <Button Content="✎" Style="{StaticResource IconButton}" Tag="{Binding}" ToolTip="Редактировать" Click="EditTask_Click"/>
+                                        <Button Content="🗑" Style="{StaticResource IconButton}" Tag="{Binding}" ToolTip="Удалить" Click="DeleteTask_Click"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>

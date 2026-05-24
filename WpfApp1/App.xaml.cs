@@ -13,5 +13,11 @@ namespace WpfApp1
     /// </summary>
     public partial class App : Application
     {
+        public static event System.Action<bool> ThemeChanged;
+
+        public static void NotifyThemeChanged(bool isDark)
+        {
+            ThemeChanged?.Invoke(isDark);
+        }
     }
 }
