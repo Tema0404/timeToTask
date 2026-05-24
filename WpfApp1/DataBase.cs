@@ -150,6 +150,39 @@ namespace WorkWithDataBase
                 }
             }
         }
+
+        //Метод для проверки существования пароля в бд(для валидации)
+        public bool IsLoginExists(string login)
+        {
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                string query = "SELECT COUNT(*) FROM users WHERE LOWER(\"login\") = LOWER(@login)";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@login", login);
+                    long count = Convert.ToInt64(cmd.ExecuteScalar());
+                    return count > 0;
+                }
+            }
+        }
+        //Метод для проверки существования почты в бд(для валидации)
+        public bool IsEmailExists(string email)
+        {
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                string query = "SELECT COUNT(*) FROM users WHERE LOWER(\"mail\") = LOWER(@email)";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@email", email);
+
+                    var result = cmd.ExecuteScalar();
+                    long count = Convert.ToInt64(result);
+                    return count > 0;
+                }
+            }
+        }
         public int AddFullTask(int uid, string nameTask, string description, DateTime? appointmentDay,
             bool isPermanent, string recurringDays, DateTime? month, string excludedDates)
         {
