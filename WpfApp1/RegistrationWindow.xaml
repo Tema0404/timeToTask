@@ -50,6 +50,40 @@
                         MouseLeave="btnTogglePassword_MouseLeave"/>
             </Grid>
 
+            <TextBlock Text="Повторите пароль" FontSize="24" TextAlignment="Center" Margin="20"/>
+            <Grid Width="200" Height="25" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <PasswordBox x:Name="txtPasswordReplay" 
+                     Grid.Column="0" 
+                     Grid.ColumnSpan="2"
+                     FontSize="18"
+                     Padding="2,0,30,0"
+                     VerticalContentAlignment="Center"/>
+                <TextBox x:Name="txtPasswordTextBoxReplay" 
+                     Grid.Column="0" 
+                     Grid.ColumnSpan="2"
+                     FontSize="18" 
+                     Visibility="Collapsed"
+                     Padding="2,0,30,0"
+                     VerticalContentAlignment="Center"/>
+                <Button x:Name="btnTogglePasswordReplay" 
+                    Grid.Column="1"
+                    Width="25" 
+                    Height="23" 
+                    Content="👁" 
+                    Background="Transparent" 
+                    BorderThickness="0"
+                    Margin="0,0,3,0"
+                    Cursor="Hand"
+                    VerticalAlignment="Center"
+                    PreviewMouseDown="btnTogglePassword_PreviewMouseDown"
+                    PreviewMouseUp="btnTogglePassword_PreviewMouseUp"
+                    MouseLeave="btnTogglePassword_MouseLeave"/>
+            </Grid>
+
             <TextBlock Text="Почта" FontSize="24" TextAlignment="Center" Margin="20"/>
             <TextBox x:Name="txtMail" Margin="5" Height="25" Width="200" FontSize="18"/>
 

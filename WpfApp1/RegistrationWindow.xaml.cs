@@ -28,75 +28,19 @@ namespace TimeToTask
         {
             string login = txtgLogin.Text;
             string password = txtPassword.Password;
-            string mail = txtMail.Text;
+            string passwordReplay = txtPasswordReplay.Password;
+            string email = txtMail.Text;
             PostgreSql connect = new PostgreSql();
 
-            if (login.Length < 3 || login.Length > 40)
-            {
-                MessageBox.Show("Длина логина должна быть от 3 до 40 символов.", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (!LoginVerification.Ckeck(login, connect)) return;
+            if (!PasswordVerification.Equal(password, passwordReplay)) return;
+            if (!PasswordVerification.Check(password)) return;
+            if (!EmailVerification.Check(email, connect)) return;
+            
 
-            if (!Regex.IsMatch(login, @"^[a-zA-Z0-9._-]+$"))
-            {
-                MessageBox.Show("Логин может содержать только латинские буквы, цифры, точки, дефисы и символы подчеркивания.", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (connect.IsLoginExists(login))
-            {
-                MessageBox.Show("Пользователь с таким логином уже зарегистрирован.", "Ошибка регистрации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (password.Length < 8 || password.Length > 30)
-            {
-                MessageBox.Show("Длина пароля должна быть от 8 до 30 символов.", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var hasUpperCase = new Regex(@"[A-ZА-ЯЁ]");
-            var hasLowerCase = new Regex(@"[a-zа-яё]");
-            var hasDecimalDigit = new Regex(@"[0-9]");
-            var hasSpecialChar = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
-
-            if (!hasUpperCase.IsMatch(password))
-            {
-                MessageBox.Show("Пароль должен содержать хотя бы одну заглавную букву.", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (!hasLowerCase.IsMatch(password))
-            {
-                MessageBox.Show("Пароль должен содержать хотя бы одну строчную букву.", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (!hasDecimalDigit.IsMatch(password))
-            {
-                MessageBox.Show("Пароль должен содержать хотя бы одну цифру.", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            if (!hasSpecialChar.IsMatch(password))
-            {
-                MessageBox.Show("Пароль должен содержать хотя бы один специальный символ (например, !, @, #, $, %).", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-            if (!Regex.IsMatch(mail, emailPattern))
-            {
-                MessageBox.Show("Введите корректный адрес электронной почты (например, example@mail.com).", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (connect.IsEmailExists(mail))
-            {
-                MessageBox.Show("Пользователь с такой электронной почтой уже зарегистрирован.", "Ошибка регистрации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            connect.AddNewUser(login, mail, password);
+            connect.AddNewUser(login, email, password);
             int newUid = connect.GetUserId(login, password);
-            UserItem newUser = new UserItem(newUid, login, password, mail);
+            UserItem newUser = new UserItem(newUid, login, password, email);
 
             MessageBox.Show(
                 "Ваш аккаунт успешно создан",
@@ -114,10 +58,17 @@ namespace TimeToTask
         private void btnTogglePassword_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             btnTogglePassword.Content = "🙈";
+            btnTogglePasswordReplay.Content = "🙈";
+
             txtPasswordTextBox.Text = txtPassword.Password;
+            txtPasswordTextBoxReplay.Text = txtPasswordReplay.Password;
+
             txtPassword.Visibility = Visibility.Collapsed;
+            txtPasswordReplay.Visibility = Visibility.Collapsed;
             txtPasswordTextBox.Visibility = Visibility.Visible;
+            txtPasswordTextBoxReplay.Visibility = Visibility.Visible;
             txtPasswordTextBox.Focus();
+
         }
 
         private void btnTogglePassword_PreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -132,13 +83,20 @@ namespace TimeToTask
 
         private void ResetPasswordVisibility()
         {
-            if (txtPasswordTextBox.Visibility == Visibility.Visible)
+            if (txtPasswordTextBox.Visibility == Visibility.Visible || 
+                txtPasswordTextBoxReplay.Visibility == Visibility.Visible)
             {
                 btnTogglePassword.Content = "👁";
+                btnTogglePasswordReplay.Content = "👁";
+
                 txtPassword.Password = txtPasswordTextBox.Text;
+                txtPasswordReplay.Password = txtPasswordTextBoxReplay.Text;
 
                 txtPasswordTextBox.Visibility = Visibility.Collapsed;
+                txtPasswordTextBoxReplay.Visibility = Visibility.Collapsed;
+
                 txtPassword.Visibility = Visibility.Visible;
+                txtPasswordReplay.Visibility = Visibility.Visible;
 
                 txtPassword.Focus();
             }
