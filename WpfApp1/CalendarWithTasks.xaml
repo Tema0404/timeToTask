@@ -4,11 +4,11 @@
         Title="Трекер привычек" 
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource WindowBackground}">
+        Background="{DynamicResource WindowBackground}">
     <Window.Resources>
         <Style x:Key="NavToggleButton" TargetType="ToggleButton">
-            <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
+            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -23,18 +23,18 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ButtonHover}"/>
+                    <Setter Property="Background" Value="{DynamicResource ButtonHover}"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
                     <Setter Property="Foreground" Value="White"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="NavButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
+            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -49,14 +49,14 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ButtonHover}"/>
+                    <Setter Property="Background" Value="{DynamicResource ButtonHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="PastelButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
+            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -71,7 +71,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ButtonHover}"/>
+                    <Setter Property="Background" Value="{DynamicResource ButtonHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -82,13 +82,13 @@
         </Style>
 
         <Style x:Key="PastelTextBox" TargetType="TextBox">
-            <Setter Property="Background" Value="{StaticResource InputBackground}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="8,5"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
-            <Setter Property="CaretBrush" Value="{StaticResource PrimaryTextColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource PrimaryTextColor}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -104,9 +104,9 @@
         </Style>
 
         <Style x:Key="PastelComboBox" TargetType="ComboBox">
-            <Setter Property="Background" Value="{StaticResource InputBackground}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
             <Setter Property="Padding" Value="6,4"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -121,7 +121,7 @@
                                               Margin="3" VerticalAlignment="Center"/>
                             <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
                                    AllowsTransparency="True" Focusable="False">
-                                <Border Background="{StaticResource InputBackground}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="6">
+                                <Border Background="{DynamicResource InputBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="6">
                                     <ScrollViewer>
                                         <ItemsPresenter/>
                                     </ScrollViewer>
@@ -137,7 +137,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="18"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Width" Value="30"/>
             <Setter Property="Height" Value="30"/>
@@ -152,15 +152,15 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource IconButtonHover}"/>
+                    <Setter Property="Background" Value="{DynamicResource IconButtonHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="DayButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource DayButtonBackground}"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource DayButtonBorder}"/>
+            <Setter Property="Background" Value="{DynamicResource DayButtonBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource DayButtonBorder}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Template">
@@ -177,14 +177,12 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource DayButtonHover}"/>
+                    <Setter Property="Background" Value="{DynamicResource DayButtonHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    
-    
-    
+
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -196,7 +194,7 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12">
                 <Button Content="◀" Width="30" Click="PreviousMonth_Click" Style="{StaticResource NavButton}"/>
                 <TextBlock x:Name="MonthYearText" Width="170" TextAlignment="Center"
-                           FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="{StaticResource PrimaryTextColor}"/>
+                           FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextColor}"/>
                 <Button Content="▶" Width="30" Click="NextMonth_Click" Style="{StaticResource NavButton}"/>
                 <ToggleButton x:Name="ThemeToggleBtn" Content="🌙" Width="40" Margin="15,0,5,0"
                               Style="{StaticResource NavToggleButton}" Checked="ThemeToggleBtn_Checked"
@@ -205,13 +203,13 @@
             </StackPanel>
 
             <UniformGrid Grid.Row="1" Columns="7" Margin="5,5,5,0">
-                <TextBlock Text="Пн" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource SecondaryTextColor}"/>
-                <TextBlock Text="Вт" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource SecondaryTextColor}"/>
-                <TextBlock Text="Ср" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource SecondaryTextColor}"/>
-                <TextBlock Text="Чт" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource SecondaryTextColor}"/>
-                <TextBlock Text="Пт" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource SecondaryTextColor}"/>
-                <TextBlock Text="Сб" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource WeekendTextColor}"/>
-                <TextBlock Text="Вс" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource WeekendTextColor}"/>
+                <TextBlock Text="Пн" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource SecondaryTextColor}"/>
+                <TextBlock Text="Вт" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource SecondaryTextColor}"/>
+                <TextBlock Text="Ср" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource SecondaryTextColor}"/>
+                <TextBlock Text="Чт" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource SecondaryTextColor}"/>
+                <TextBlock Text="Пт" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource SecondaryTextColor}"/>
+                <TextBlock Text="Сб" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource WeekendTextColor}"/>
+                <TextBlock Text="Вс" HorizontalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource WeekendTextColor}"/>
             </UniformGrid>
 
             <UniformGrid x:Name="DaysGrid" Grid.Row="2" Columns="7" Margin="8"/>
@@ -219,35 +217,33 @@
 
         <Popup x:Name="TaskPopup" AllowsTransparency="True" Placement="Bottom" StaysOpen="False"
                Width="300" MaxHeight="450" PopupAnimation="Fade">
-            <Border Background="{StaticResource PopupBackground}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="16" Padding="0">
+            <Border Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="16" Padding="0">
                 <Border.Effect>
                     <DropShadowEffect Color="#1A1B26" ShadowDepth="6" BlurRadius="16" Opacity="0.8"/>
                 </Border.Effect>
                 <StackPanel Margin="14">
                     <TextBlock x:Name="PopupDateText" FontWeight="Bold" FontSize="15"
-                               Foreground="{StaticResource PrimaryTextColor}" Margin="0,0,0,6"/>
+                               Foreground="{DynamicResource PrimaryTextColor}" Margin="0,0,0,6"/>
                     <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto">
                         <StackPanel x:Name="TasksPanel"/>
                     </ScrollViewer>
                     <Button x:Name="ShowAddPanelButton" Content="✚ Добавить задачу"
                             Click="ShowAddPanel_Click" Margin="0,8,0,0" Style="{StaticResource PastelButton}"/>
                     <Border x:Name="AddTaskPanel" Visibility="Collapsed" Margin="0,8,0,0"
-                            Background="{StaticResource PanelBackground}" CornerRadius="10" Padding="10">
+                            Background="{DynamicResource PanelBackground}" CornerRadius="10" Padding="10">
                         <StackPanel>
                             <TextBox x:Name="TaskTextBox" Text="Название задачи"
                                      GotFocus="TaskTextBox_GotFocus" Margin="0,0,0,8"
                                      Style="{StaticResource PastelTextBox}"/>
                             <CheckBox x:Name="PermanentCheckBox" Content="Постоянная задача"
                                       Checked="PermanentCheckBox_Changed" Unchecked="PermanentCheckBox_Changed"
-                                      Foreground="{StaticResource PrimaryTextColor}"/>
-                            <ComboBox x:Name="DayOfWeekComboBox" Visibility="Collapsed" Margin="0,5"
-                                      Style="{StaticResource PastelComboBox}">
+                                      Foreground="{DynamicResource PrimaryTextColor}"/>
+                            <ComboBox x:Name="DayOfWeekComboBox" Visibility="Collapsed" Margin="0,5" Style="{StaticResource PastelComboBox}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <CheckBox Content="{Binding Name}"
-                                                  IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                  Checked="DayCheckBox_Changed"
-                                                  Unchecked="DayCheckBox_Changed"/>
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                      Foreground="{DynamicResource PrimaryTextColor}"
+                      Checked="DayCheckBox_Changed" Unchecked="DayCheckBox_Changed"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
