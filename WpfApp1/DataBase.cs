@@ -19,7 +19,7 @@ namespace WorkWithDataBase
         {
             
         }
-        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;";
+        private string connectionString = "Server=localhost; port=5432; Database=postgres; User Id=postgres; Password=nihao312;";
 
         private void DoCommand(string InputCommand)
         {
