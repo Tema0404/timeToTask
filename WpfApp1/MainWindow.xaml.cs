@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using WorkWithDataBase;
@@ -27,15 +28,12 @@ namespace TimeToTask
         public MainWindow(UserItem user)
         {
             InitializeComponent();
-            
+
             App.ThemeChanged += OnGlobalThemeChanged;
             this.Closed += (s, e) => App.ThemeChanged -= OnGlobalThemeChanged;
             _currentUser = user;
             _db = new PostgreSql();
             DateText.Text = _today.ToString("dd MMMM yyyy, dddd");
-
-            App.ThemeChanged += OnGlobalThemeChanged;
-            this.Closed += (s, e) => App.ThemeChanged -= OnGlobalThemeChanged;
 
             _dayItems = new ObservableCollection<DayItem>
             {
@@ -69,8 +67,6 @@ namespace TimeToTask
             LoadTasks();
             this.Closed += (s, e) => IsClosed = true;
         }
-
-
 
         protected override void OnActivated(EventArgs e)
         {
@@ -326,7 +322,6 @@ namespace TimeToTask
 
             if (isDark)
             {
-                // Основные цвета
                 resources["WindowBackground"] = new SolidColorBrush(Color.FromRgb(0x1A, 0x1B, 0x26));
                 resources["PrimaryTextColor"] = new SolidColorBrush(Color.FromRgb(0xF5, 0xF5, 0xF7));
                 resources["SecondaryTextColor"] = new SolidColorBrush(Color.FromRgb(0xC0, 0xC2, 0xE0));
@@ -346,7 +341,6 @@ namespace TimeToTask
             }
             else
             {
-                // Светлая пастельная схема
                 resources["WindowBackground"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xF5, 0xF0));
                 resources["PrimaryTextColor"] = new SolidColorBrush(Color.FromRgb(0x5D, 0x53, 0x4C));
                 resources["SecondaryTextColor"] = new SolidColorBrush(Color.FromRgb(0x8B, 0x7D, 0x6B));
@@ -365,25 +359,20 @@ namespace TimeToTask
                 resources["IconButtonHover"] = new SolidColorBrush(Color.FromRgb(0xEE, 0xD9, 0xC4));
             }
 
-            
             this.Background = (Brush)resources["WindowBackground"];
-            
             RefreshTodayTasks();
         }
 
         private void OnGlobalThemeChanged(bool isDark)
         {
-            // если текущее состояние темы уже совпадает – не обновляем, чтобы избежать лишних вызовов
             if (_isDarkTheme == isDark) return;
 
-            // обновляем состояние кнопки (без вызова события, чтобы не зациклиться)
             ThemeToggleBtn.Checked -= ThemeToggleBtn_Checked;
             ThemeToggleBtn.Unchecked -= ThemeToggleBtn_Unchecked;
             ThemeToggleBtn.IsChecked = isDark;
             ThemeToggleBtn.Checked += ThemeToggleBtn_Checked;
             ThemeToggleBtn.Unchecked += ThemeToggleBtn_Unchecked;
 
-            // применяем тему
             ApplyTheme(isDark);
         }
 
@@ -391,15 +380,59 @@ namespace TimeToTask
         {
             if (_isDarkTheme == isDark) return;
 
-            // Анимация (если есть)
             AnimateThemeSwitch(isDark);
-
-            // Применяем тему в текущем окне
             ApplyTheme(isDark);
-
-            // Оповещаем все остальные окна
             App.NotifyThemeChanged(isDark);
         }
 
+        #region ЛОГИКА БОКОВОЙ ПАНЕЛИ
+
+        // Нажатие на кнопку "👤 Профиль" — открываем панель
+        private void btnAccSettings_Click(object sender, RoutedEventArgs e)
+        {
+            AccountSidePanel.Visibility = AccountSidePanel.Visibility == Visibility.Visible
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+        }
+
+        // Закрытие панели по клику в пустую область справа
+        private void ClosePanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            AccountSidePanel.Visibility = Visibility.Collapsed;
+        }
+
+        // Кнопка: Выйти из аккаунта
+        private void btnExitAcc_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+                "Вы действительно хотите выйти из аккаунта?",
+                "Выход из системы",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                // Открываем окно входа
+                EntryWindow loginWindow = new EntryWindow();
+                loginWindow.Show();
+
+                Application.Current.MainWindow = loginWindow;
+                this.Close();
+            }
+        }
+
+        // Кнопка: Сменить пароль
+        private void btnChangePassword_Click(object sender, RoutedEventArgs e)
+        {
+            AccountSidePanel.Visibility = Visibility.Collapsed;
+
+            // Передаем id авторизованного пользователя из объекта _currentUser
+            ChangePasswordWindow changePassWindow = new ChangePasswordWindow(_currentUser.id);
+            changePassWindow.Owner = this;
+            changePassWindow.ShowDialog();
+        }
+
+        #endregion
     }
 }

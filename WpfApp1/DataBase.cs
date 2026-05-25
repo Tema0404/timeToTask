@@ -19,7 +19,7 @@ namespace WorkWithDataBase
         {
             
         }
-        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;";
+        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=123456;";
 
         private void DoCommand(string InputCommand)
         {
@@ -299,6 +299,44 @@ namespace WorkWithDataBase
                     }
                 }
                 return tasks;
+            }
+        }
+        // Метод проверки текущего пароля (авторизация по ID)
+        public object AuthorizeUser(string userId, string password)
+        {
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                // Проверяем, существует ли пользователь с таким ID и паролем
+                string query = "SELECT id FROM users WHERE id = @uid AND password = @password";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                {
+                    // Используем параметры для безопасности
+                    cmd.Parameters.AddWithValue("@uid", Convert.ToInt32(userId));
+                    cmd.Parameters.AddWithValue("@password", password);
+
+                    object result = cmd.ExecuteScalar();
+
+                    // Если нашли совпадение, возвращаем объект (id), иначе null
+                    return result;
+                }
+            }
+        }
+
+        // Метод обновления пароля в базе данных
+        public void ChangePassword(int uid, string newPassword)
+        {
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                string query = "UPDATE users SET password = @newPassword WHERE id = @uid";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@newPassword", newPassword);
+                    cmd.Parameters.AddWithValue("@uid", uid);
+
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
     }
