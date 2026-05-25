@@ -29,10 +29,10 @@ namespace TimeToTask
         public CalendarWithTasks(UserItem user, MainWindow mainWindow = null)
         {
             InitializeComponent();
-            
+
             App.ThemeChanged += OnGlobalThemeChanged;
             this.Closed += (s, e) => App.ThemeChanged -= OnGlobalThemeChanged;
-            
+
             _currentUser = user;
             _mainWindow = mainWindow;
             _db = new PostgreSql();
@@ -61,7 +61,6 @@ namespace TimeToTask
             MonthComboBox.DisplayMemberPath = "DisplayName";
             MonthComboBox.SelectedValuePath = "MonthDate";
 
-            // Настройка анимации
             ThemeToggleBtn.RenderTransform = new RotateTransform();
             ThemeToggleBtn.RenderTransformOrigin = new Point(0.5, 0.5);
 
@@ -185,11 +184,12 @@ namespace TimeToTask
                     Foreground = (Brush)FindResource("PrimaryTextColor"),
                     HorizontalAlignment = HorizontalAlignment.Center
                 };
+                // Увеличенная точка (10x10)
                 Ellipse dot = new Ellipse
                 {
-                    Width = 7,
-                    Height = 7,
-                    Margin = new Thickness(0, 2, 0, 0),
+                    Width = 10,
+                    Height = 10,
+                    Margin = new Thickness(0, 4, 0, 0),
                     Fill = GetColorForDate(date)
                 };
                 sp.Children.Add(dayText);
@@ -214,10 +214,19 @@ namespace TimeToTask
                 return (Brush)FindResource("SecondaryTextColor");
             }
 
-            if (date.Date > DateTime.Today)
-                return (Brush)FindResource("PrimaryTextColor");
-
             int completed = tasks.Count(t => t.IsCompletedOnDate(date));
+
+            // для будущих дат: если нет выполненных – акцентный цвет (план), иначе зелёный/жёлтый
+            if (date.Date > DateTime.Today)
+            {
+                if (completed == 0)
+                    return (Brush)FindResource("AccentColor");
+                if (completed == tasks.Count)
+                    return new SolidColorBrush(Color.FromRgb(0x9E, 0xCE, 0x6A)); // зелёный
+                return new SolidColorBrush(Color.FromRgb(0xE0, 0xAF, 0x68));     // жёлтый (редко)
+            }
+
+            // Для прошлых и сегодняшнего дня – стандартная логика
             if (completed == tasks.Count)
                 return new SolidColorBrush(Color.FromRgb(0x9E, 0xCE, 0x6A)); // зелёный
             if (completed == 0)
@@ -242,7 +251,6 @@ namespace TimeToTask
                 return t.Date == date;
             }).ToList();
         }
-
         private void DayButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.Tag is DateTime date)

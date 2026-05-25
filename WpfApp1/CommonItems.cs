@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfApp1;
 
 namespace TimeToTask
 {
@@ -38,63 +39,96 @@ namespace TimeToTask
         public InputDialog(string title, string message, string defaultValue = "")
         {
             Title = title;
-            Width = 350;
-            Height = 150;
+            Width = 360;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             ResizeMode = ResizeMode.NoResize;
+            SizeToContent = SizeToContent.WidthAndHeight; // авторазмер по содержимому
             Background = (Brush)Application.Current.Resources["WindowBackground"];
             BorderBrush = (Brush)Application.Current.Resources["BorderColor"];
             BorderThickness = new Thickness(1);
 
-            Grid grid = new Grid();
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.Margin = new Thickness(10);
+            var mainPanel = new StackPanel { Margin = new Thickness(16) };
 
-            TextBlock prompt = new TextBlock
+            // Сообщение
+            mainPanel.Children.Add(new TextBlock
             {
                 Text = message,
                 Foreground = (Brush)Application.Current.Resources["PrimaryTextColor"],
-                FontSize = 14,
-                Margin = new Thickness(0, 0, 0, 8)
-            };
-            Grid.SetRow(prompt, 0);
+                FontSize = 13,
+                Margin = new Thickness(0, 0, 0, 12)
+            });
 
+            // Поле ввода
             _textBox = new TextBox
             {
                 Text = defaultValue,
-                Style = (Style)Application.Current.Resources["PastelTextBox"],
-                Height = 28
+                Height = 28,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                Background = (Brush)Application.Current.Resources["InputBackground"],
+                Foreground = (Brush)Application.Current.Resources["PrimaryTextColor"],
+                BorderBrush = (Brush)Application.Current.Resources["BorderColor"],
+                BorderThickness = new Thickness(1),
+                CaretBrush = (Brush)Application.Current.Resources["PrimaryTextColor"],
+                Margin = new Thickness(0, 0, 0, 16)
             };
-            Grid.SetRow(_textBox, 1);
+            mainPanel.Children.Add(_textBox);
 
-            StackPanel buttons = new StackPanel
+            // Кнопки
+            var buttonsPanel = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Margin = new Thickness(0, 10, 0, 0)
+                HorizontalAlignment = HorizontalAlignment.Right
             };
-            Button okBtn = new Button { Content = "OK", Width = 70, Style = (Style)Application.Current.Resources["SmallPastelButton"] };
-            Button cancelBtn = new Button { Content = "Отмена", Width = 70, Style = (Style)Application.Current.Resources["SmallPastelButton"], Margin = new Thickness(8, 0, 0, 0) };
-            okBtn.Click += (s, ev) => { Result = _textBox.Text; DialogResult = true; Close(); };
-            cancelBtn.Click += (s, ev) => { DialogResult = false; Close(); };
-            buttons.Children.Add(okBtn);
-            buttons.Children.Add(cancelBtn);
-            Grid.SetRow(buttons, 2);
+            var okBtn = new Button
+            {
+                Content = "OK",
+                MinWidth = 70,
+                Height = 28,
+                Margin = new Thickness(0, 0, 8, 0),
+                Style = (Style)Application.Current.Resources["SmallPastelButton"]
+            };
+            okBtn.Click += (s, e) => { Result = _textBox.Text; DialogResult = true; Close(); };
+            var cancelBtn = new Button
+            {
+                Content = "Отмена",
+                MinWidth = 70,
+                Height = 28,
+                Style = (Style)Application.Current.Resources["SmallPastelButton"]
+            };
+            cancelBtn.Click += (s, e) => { DialogResult = false; Close(); };
+            buttonsPanel.Children.Add(okBtn);
+            buttonsPanel.Children.Add(cancelBtn);
+            mainPanel.Children.Add(buttonsPanel);
 
-            grid.Children.Add(prompt);
-            grid.Children.Add(_textBox);
-            grid.Children.Add(buttons);
-            Content = grid;
+            Content = mainPanel;
+
+            Loaded += (s, e) => _textBox.Focus();
+
+            App.ThemeChanged += OnThemeChanged;
+            this.Closed += (s, e) => App.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(bool isDark)
+        {
+            Background = (Brush)Application.Current.Resources["WindowBackground"];
+            BorderBrush = (Brush)Application.Current.Resources["BorderColor"];
+            if (_textBox != null)
+            {
+                _textBox.Background = (Brush)Application.Current.Resources["InputBackground"];
+                _textBox.Foreground = (Brush)Application.Current.Resources["PrimaryTextColor"];
+                _textBox.BorderBrush = (Brush)Application.Current.Resources["BorderColor"];
+                _textBox.CaretBrush = (Brush)Application.Current.Resources["PrimaryTextColor"];
+            }
+            // Обновляем цвет сообщения, если нужно
+            if (Content is StackPanel panel && panel.Children[0] is TextBlock prompt)
+                prompt.Foreground = (Brush)Application.Current.Resources["PrimaryTextColor"];
         }
 
         public static string Show(string title, string message, string defaultValue = "")
         {
-            InputDialog dialog = new InputDialog(title, message, defaultValue);
+            var dialog = new InputDialog(title, message, defaultValue);
             dialog.Owner = Application.Current.MainWindow;
-            bool? result = dialog.ShowDialog();
-            return (result == true) ? dialog.Result : null;
+            return dialog.ShowDialog() == true ? dialog.Result : null;
         }
     }
 }

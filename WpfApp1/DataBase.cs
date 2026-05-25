@@ -19,7 +19,9 @@ namespace WorkWithDataBase
         {
             
         }
-        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=123456;";
+
+        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;";
+
 
         private void DoCommand(string InputCommand)
         {
@@ -64,34 +66,6 @@ namespace WorkWithDataBase
                 $"VALUES ({uid}, '{nameTask}', '{description}', '{appointmentDay}')";
             DoCommand(query);
         }
-        //public List<TaskItem> GetTasksByUser(int uid)
-        //{
-        //    List<TaskItem> tasks = new List<TaskItem>();
-        //    using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
-        //    {
-        //        sqlConnection.Open();
-        //        string query = $"SELECT id, name_task, description, appointment_day FROM tasks WHERE user_id = {uid}";
-        //        using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
-        //        {
-        //            using (NpgsqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    tasks.Add(new TaskItem
-        //                    {
-        //                        Id = reader.GetInt32(0),
-        //                        Description = reader.GetString(1),
-        //                        Note = reader.IsDBNull(2) ? null : reader.GetString(2),
-        //                        Date = reader.GetDateTime(3),
-        //                        IsCompleted = reader.GetBoolean(4),
-        //                        IsPermanent = reader.GetBoolean(5),
-        //                    });
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return tasks;
-        //}
         public void DeleteTask(int uid, int idTask)
         {
             string query = $"DELETE FROM tasks WHERE user_id = {uid} and id = {idTask}";
@@ -339,7 +313,6 @@ namespace WorkWithDataBase
                 }
             }
         }
-
         public void DeleteUser(int uid)
         {
             using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))

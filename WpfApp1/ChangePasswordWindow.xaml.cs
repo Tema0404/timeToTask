@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using WorkWithDataBase;
+using TimeToTask;
 
 namespace WpfApp1
 {
@@ -100,6 +101,7 @@ namespace WpfApp1
 
                 if (user != null)
                 {
+                    if (!PasswordVerification.Check(newPassword)) return;
                     // Вызываем метод смены пароля в вашем классе PostgreSql
                     _db.ChangePassword(_userId, newPassword);
 
