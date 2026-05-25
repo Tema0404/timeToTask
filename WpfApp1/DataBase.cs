@@ -339,5 +339,29 @@ namespace WorkWithDataBase
                 }
             }
         }
+
+        public void DeleteUser(int uid)
+        {
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                // При удалении пользователя благодаря CASCADE в БД (если настроено) 
+                // удалятся и его задачи. На всякий случай удаляем явно, если связей нет.
+                string deleteTasksQuery = "DELETE FROM tasks WHERE user_id = @uid";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(deleteTasksQuery, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@uid", uid);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Удаляем самого пользователя
+                string deleteUserQuery = "DELETE FROM users WHERE id = @uid";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(deleteUserQuery, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@uid", uid);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

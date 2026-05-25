@@ -386,6 +386,38 @@ namespace TimeToTask
         }
 
         #region ЛОГИКА БОКОВОЙ ПАНЕЛИ
+        private void btnDeleteAccount_Click(object sender, RoutedEventArgs e)
+        {
+            // Показываем окно подтверждения с текстом предупреждения
+            MessageBoxResult result = MessageBox.Show(
+                "Вы уверены, что хотите удалить аккаунт?\nВсе ваши данные будут безвозвратно потеряны.",
+                "Предупреждение об удалении",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    // Вызываем метод удаления из бд (предполагается, что _userId доступен в текущем контексте)
+                    WorkWithDataBase.PostgreSql db = new WorkWithDataBase.PostgreSql();
+                    db.DeleteUser(_currentUser.id);
+
+                    MessageBox.Show("Ваш аккаунт был успешно удален. Жаль, что вы уходите!", "Аккаунт удален", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    EntryWindow loginWindow = new EntryWindow();
+                    loginWindow.Show();
+
+                    // Закрываем текущее главное окно приложения
+                    Window.GetWindow(this).Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Не удалось удалить аккаунт: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
 
         // Нажатие на кнопку "👤 Профиль" — открываем панель
         private void btnAccSettings_Click(object sender, RoutedEventArgs e)
