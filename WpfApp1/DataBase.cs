@@ -19,7 +19,9 @@ namespace WorkWithDataBase
         {
             
         }
-        private string connectionString = "Server=localhost; port=5432; Database=postgres; User Id=postgres; Password=nihao312;";
+
+        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;";
+
 
         private void DoCommand(string InputCommand)
         {
@@ -64,34 +66,6 @@ namespace WorkWithDataBase
                 $"VALUES ({uid}, '{nameTask}', '{description}', '{appointmentDay}')";
             DoCommand(query);
         }
-        //public List<TaskItem> GetTasksByUser(int uid)
-        //{
-        //    List<TaskItem> tasks = new List<TaskItem>();
-        //    using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
-        //    {
-        //        sqlConnection.Open();
-        //        string query = $"SELECT id, name_task, description, appointment_day FROM tasks WHERE user_id = {uid}";
-        //        using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
-        //        {
-        //            using (NpgsqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    tasks.Add(new TaskItem
-        //                    {
-        //                        Id = reader.GetInt32(0),
-        //                        Description = reader.GetString(1),
-        //                        Note = reader.IsDBNull(2) ? null : reader.GetString(2),
-        //                        Date = reader.GetDateTime(3),
-        //                        IsCompleted = reader.GetBoolean(4),
-        //                        IsPermanent = reader.GetBoolean(5),
-        //                    });
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return tasks;
-        //}
         public void DeleteTask(int uid, int idTask)
         {
             string query = $"DELETE FROM tasks WHERE user_id = {uid} and id = {idTask}";
@@ -299,6 +273,67 @@ namespace WorkWithDataBase
                     }
                 }
                 return tasks;
+            }
+        }
+        // Метод проверки текущего пароля (авторизация по ID)
+        public object AuthorizeUser(string userId, string password)
+        {
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                // Проверяем, существует ли пользователь с таким ID и паролем
+                string query = "SELECT id FROM users WHERE id = @uid AND password = @password";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                {
+                    // Используем параметры для безопасности
+                    cmd.Parameters.AddWithValue("@uid", Convert.ToInt32(userId));
+                    cmd.Parameters.AddWithValue("@password", password);
+
+                    object result = cmd.ExecuteScalar();
+
+                    // Если нашли совпадение, возвращаем объект (id), иначе null
+                    return result;
+                }
+            }
+        }
+
+        // Метод обновления пароля в базе данных
+        public void ChangePassword(int uid, string newPassword)
+        {
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                string query = "UPDATE users SET password = @newPassword WHERE id = @uid";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@newPassword", newPassword);
+                    cmd.Parameters.AddWithValue("@uid", uid);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void DeleteUser(int uid)
+        {
+            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                // При удалении пользователя благодаря CASCADE в БД (если настроено) 
+                // удалятся и его задачи. На всякий случай удаляем явно, если связей нет.
+                string deleteTasksQuery = "DELETE FROM tasks WHERE user_id = @uid";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(deleteTasksQuery, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@uid", uid);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Удаляем самого пользователя
+                string deleteUserQuery = "DELETE FROM users WHERE id = @uid";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(deleteUserQuery, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@uid", uid);
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
     }

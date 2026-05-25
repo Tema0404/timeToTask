@@ -117,6 +117,7 @@
                             <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                               Margin="3" VerticalAlignment="Center"/>
                             <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}"
                                    AllowsTransparency="True" Focusable="False">
@@ -155,6 +156,28 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="DangerPastelButton" TargetType="Button">
+            <Setter Property="Background" Value="#FFF0F0"/>
+            <Setter Property="Foreground" Value="#D32F2F"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="15,10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFD6D6"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -163,14 +186,20 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15">
-            <TextBlock x:Name="DateText" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" VerticalAlignment="Center"/>
-            <Button x:Name="btnToCalendar" Content="📆 Календарь" Margin="30,0,0,0" Click="btnToCalendar_Click" Style="{StaticResource PastelButton}"/>
-            <ToggleButton x:Name="ThemeToggleBtn" Content="🌙" Width="40" Margin="15,0,0,0"
-                          Style="{StaticResource NavToggleButton}" Checked="ThemeToggleBtn_Checked"
-                          Unchecked="ThemeToggleBtn_Unchecked"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="30,15,30,15">
+            <Button x:Name="btnAccSettings" Content="👤 Профиль" 
+                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Click="btnAccSettings_Click" Style="{StaticResource PastelButton}"/>
 
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock x:Name="DateText" FontSize="24" FontWeight="Bold" Foreground="{StaticResource PrimaryTextColor}" VerticalAlignment="Center"/>
+                <Button x:Name="btnToCalendar" Content="📆 Календарь" Margin="30,0,0,0" Click="btnToCalendar_Click" Style="{StaticResource PastelButton}"/>
+                <ToggleButton x:Name="ThemeToggleBtn" Content="🌙" Width="40" Margin="15,0,0,0"
+                              Style="{StaticResource NavToggleButton}" Checked="ThemeToggleBtn_Checked"
+                              Unchecked="ThemeToggleBtn_Unchecked"/>
+            </StackPanel>
+        </Grid>
+        
         <ScrollViewer Grid.Row="1" Margin="30,10,30,30">
             <StackPanel>
                 <Button Content="✚ Добавить задачу" Click="ShowAddPanel_Click" HorizontalAlignment="Left" Margin="0,0,0,10" Style="{StaticResource PastelButton}"/>
@@ -195,9 +224,11 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
+
                 <ItemsControl x:Name="TasksItemsControl">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
+<!--<<<<<<< HEAD -->
                             <Border Background="{DynamicResource InputBackground}" CornerRadius="8" Margin="0,4" Padding="10,8"
                                     BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
                                 <Grid>
@@ -220,10 +251,42 @@
                                     </StackPanel>
                                 </Grid>
                             </Border>
+<!--======= 
+                            <Border Background="{StaticResource InputBackground}" CornerRadius="8" Margin="0,4" Padding="10,8"
+                                    BorderBrush="{StaticResource BorderColor}" BorderThickness="1"/>
+ >>>> Ivan -->
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
+
+        <Grid x:Name="AccountSidePanel" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="2" Panel.ZIndex="100">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="{StaticResource PanelBackground}" BorderThickness="0,0,1,0" BorderBrush="{StaticResource BorderColor}">
+                <StackPanel Margin="20">
+                    <TextBlock Text="Личный кабинет" FontSize="22" FontWeight="Bold" Foreground="{StaticResource PrimaryTextColor}" HorizontalAlignment="Center" Margin="0,20,0,30"/>
+
+                    <Button x:Name="btnChangePassword" Content="🔐 Сменить пароль" 
+                            Height="40" Margin="0,0,0,15" Style="{StaticResource PastelButton}" FontSize="15" Click="btnChangePassword_Click"/>
+
+                    <Button x:Name="btnExitAcc" Content="🚪 Выйти из аккаунта" 
+                            Height="40" Style="{StaticResource PastelButton}" FontSize="15" Background="#FFE5E5" BorderBrush="#FFCCCC" Click="btnExitAcc_Click"/>
+                    <Button x:Name="btnDeleteAccount" 
+                            Grid.Row="1" 
+                            Content="❌ Удалить аккаунт" 
+                            Style="{StaticResource DangerPastelButton}" 
+                            Margin="20,10,20,20" 
+                            VerticalAlignment="Bottom"
+                            Click="btnDeleteAccount_Click"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Background="#01000000" MouseDown="ClosePanel_MouseDown"/>
+        </Grid>
     </Grid>
 </Window>
