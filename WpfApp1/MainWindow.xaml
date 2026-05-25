@@ -186,7 +186,7 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <ComboBox x:Name="MonthComboBox" Visibility="Collapsed" Margin="0,5" Style="{StaticResource PastelComboBox}"
+                        <ComboBox x:Name="MonthComboBox" Visibility="Collapsed" Margin="0,5"
                                   SelectionChanged="MonthComboBox_SelectionChanged"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,6,0,0">
                             <Button Content="Сохранить" Click="AddTask_Click" Style="{StaticResource SmallPastelButton}" Width="80"/>
