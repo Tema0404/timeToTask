@@ -23,6 +23,13 @@ namespace TimeToTask
         {
             InitializeComponent();
         }
+        private void EntryHyperLink_Click(object sender, RoutedEventArgs e)
+        {
+            EntryWindow entryWindow = new EntryWindow();
+            entryWindow.Show();
+            Application.Current.MainWindow = entryWindow;
+            this.Close();
+        }
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {

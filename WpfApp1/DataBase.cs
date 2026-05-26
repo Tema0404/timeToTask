@@ -270,6 +270,13 @@ namespace WorkWithDataBase
                                 }
                             }
                         }
+                        foreach (var task in tasks)
+                        {
+                            if (!task.IsPermanent && task.Date.HasValue)
+                            {
+                                task.IsCompleted = task.CompletedDates.Contains(task.Date.Value);
+                            }
+                        }
                     }
                 }
                 return tasks;
