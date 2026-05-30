@@ -196,9 +196,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <TextBlock x:Name="DateText" FontSize="24" FontWeight="Bold" Foreground="{StaticResource PrimaryTextColor}" VerticalAlignment="Center"/>
                 <Button x:Name="btnToCalendar" Content="📆 Календарь" Margin="30,0,0,0" Click="btnToCalendar_Click" Style="{StaticResource PastelButton}"/>
-                <ToggleButton x:Name="ThemeToggleBtn" Content="🌙" Width="40" Margin="15,0,0,0"
-                              Style="{StaticResource NavToggleButton}" Checked="ThemeToggleBtn_Checked"
-                              Unchecked="ThemeToggleBtn_Unchecked"/>
+                
             </StackPanel>
         </Grid>
         
@@ -230,7 +228,6 @@
                 <ItemsControl x:Name="TasksItemsControl">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-<!--<<<<<<< HEAD -->
                             <Border Background="{DynamicResource InputBackground}" CornerRadius="8" Margin="0,4" Padding="10,8"
                                     BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
                                 <Grid>
@@ -253,10 +250,7 @@
                                     </StackPanel>
                                 </Grid>
                             </Border>
-<!--======= 
-                            <Border Background="{StaticResource InputBackground}" CornerRadius="8" Margin="0,4" Padding="10,8"
-                                    BorderBrush="{StaticResource BorderColor}" BorderThickness="1"/>
- >>>> Ivan -->
+
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -272,6 +266,10 @@
             <Border Grid.Column="0" Background="{StaticResource PanelBackground}" BorderThickness="0,0,1,0" BorderBrush="{StaticResource BorderColor}">
                 <StackPanel Margin="20">
                     <TextBlock Text="Личный кабинет" FontSize="22" FontWeight="Bold" Foreground="{StaticResource PrimaryTextColor}" HorizontalAlignment="Center" Margin="0,20,0,30"/>
+
+                    <ToggleButton x:Name="ThemeToggleBtn" Content="🌙" Width="40" Margin="0, 0, 0, 15"
+                            Style="{StaticResource NavToggleButton}" Checked="ThemeToggleBtn_Checked"
+                            Unchecked="ThemeToggleBtn_Unchecked"/>
 
                     <Button x:Name="btnChangePassword" Content="🔐 Сменить пароль" 
                             Height="40" Margin="0,0,0,15" Style="{StaticResource PastelButton}" FontSize="15" Click="btnChangePassword_Click"/>

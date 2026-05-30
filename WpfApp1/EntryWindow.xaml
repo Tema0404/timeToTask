@@ -9,19 +9,16 @@
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource WindowBackground}">
-    <Grid>
+    
+    <Grid Width="300">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*" MinHeight="120"/>
+            <RowDefinition Height="1*" MinHeight="120"/>
+            <RowDefinition Height="1*" MinHeight="120"/>
+            <RowDefinition Height="1*" MinHeight="120"/>
+
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 

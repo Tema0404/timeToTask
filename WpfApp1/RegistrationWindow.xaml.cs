@@ -56,7 +56,7 @@ namespace TimeToTask
                 MessageBoxImage.Information
             );
 
-            CalendarWithTasks calendarWindow = new CalendarWithTasks(newUser, null);
+            CalendarWithTasks calendarWindow = new CalendarWithTasks(newUser);
             calendarWindow.Show();
             Application.Current.MainWindow = calendarWindow;
             this.Close();

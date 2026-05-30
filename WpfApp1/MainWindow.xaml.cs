@@ -68,19 +68,6 @@ namespace TimeToTask
             this.Closed += (s, e) => IsClosed = true;
         }
 
-        protected override void OnActivated(EventArgs e)
-        {
-            base.OnActivated(e);
-            LoadTasks();
-
-            // Синхронизация темы при возврате в окно
-            if (_isDarkTheme != _globalDarkTheme)
-            {
-                ApplyTheme(_globalDarkTheme);
-                ThemeToggleBtn.IsChecked = _globalDarkTheme;
-            }
-        }
-
         private void LoadTasks()
         {
             _allTasks.Clear();
@@ -286,9 +273,9 @@ namespace TimeToTask
 
         private void btnToCalendar_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            CalendarWithTasks calendar = new CalendarWithTasks(_currentUser, this);
+            CalendarWithTasks calendar = new CalendarWithTasks(_currentUser);
             calendar.Show();
+            this.Close();
         }
 
         // Анимация переключения темы
@@ -359,8 +346,7 @@ namespace TimeToTask
                 resources["IconButtonHover"] = new SolidColorBrush(Color.FromRgb(0xEE, 0xD9, 0xC4));
             }
 
-            this.Background = (Brush)resources["WindowBackground"];
-            RefreshTodayTasks();
+            Background = (Brush)resources["WindowBackground"];
         }
 
         private void OnGlobalThemeChanged(bool isDark)
@@ -380,8 +366,13 @@ namespace TimeToTask
         {
             if (_isDarkTheme == isDark) return;
 
+
             AnimateThemeSwitch(isDark);
+
+
             ApplyTheme(isDark);
+
+
             App.NotifyThemeChanged(isDark);
         }
 

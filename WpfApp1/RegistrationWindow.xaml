@@ -9,8 +9,8 @@
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource WindowBackground}">
-    <Grid>
-        <StackPanel Orientation="Vertical" Margin="500,100,500,1">
+    <Grid Width="300" VerticalAlignment="Center">
+        <StackPanel Orientation="Vertical" >
             <TextBlock Text="Регистрация" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
             <TextBlock Text="Логин" FontSize="24" TextAlignment="Center" Margin="20"/>
