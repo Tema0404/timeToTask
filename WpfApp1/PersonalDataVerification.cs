@@ -47,7 +47,6 @@ namespace TimeToTask
             var hasUpperCase = new Regex(@"[A-ZА-ЯЁ]");
             var hasLowerCase = new Regex(@"[a-zа-яё]");
             var hasDecimalDigit = new Regex(@"[0-9]");
-            var hasSpecialChar = new Regex(@"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
 
             if (!hasUpperCase.IsMatch(password))
             {
@@ -62,11 +61,6 @@ namespace TimeToTask
             if (!hasDecimalDigit.IsMatch(password))
             {
                 MessageBox.Show("Пароль должен содержать хотя бы одну цифру.", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-            if (!hasSpecialChar.IsMatch(password))
-            {
-                MessageBox.Show("Пароль должен содержать хотя бы один специальный символ (например, !, @, #, $, %).", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 

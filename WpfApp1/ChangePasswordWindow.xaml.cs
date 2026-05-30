@@ -68,17 +68,13 @@ namespace WpfApp1
         }
 
         #endregion
-
-        // Кнопка отмены
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        // Сохранение и валидация
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            // Берем актуальный текст из TextBox (так как они всегда синхронизированы)
             string oldPassword = txtOldPassword.Text.Trim();
             string newPassword = txtNewPassword.Text.Trim();
 
@@ -96,13 +92,11 @@ namespace WpfApp1
 
             try
             {
-                // Проверяем корректность старого пароля через метод авторизации в вашей БД
                 var user = _db.AuthorizeUser(_userId.ToString(), oldPassword);
 
                 if (user != null)
                 {
                     if (!PasswordVerification.Check(newPassword)) return;
-                    // Вызываем метод смены пароля в вашем классе PostgreSql
                     _db.ChangePassword(_userId, newPassword);
 
                     MessageBox.Show("Пароль успешно обновлен!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
