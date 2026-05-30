@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using WorkWithDataBase;
 using TimeToTask;
 
-namespace WpfApp1
+namespace TimeToTask
 {
     public partial class ChangePasswordWindow : Window
     {
@@ -17,12 +17,9 @@ namespace WpfApp1
             _userId = userId;
             _db = new PostgreSql();
 
-            // Инициализируем текстовые поля, чтобы синхронизировать их со скрытыми PasswordBox
             txtOldPassword.Visibility = Visibility.Collapsed;
             txtNewPassword.Visibility = Visibility.Collapsed;
         }
-
-        // Синхронизация данных при ручном вводе в скрытый PasswordBox
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender == pwdOldPassword)

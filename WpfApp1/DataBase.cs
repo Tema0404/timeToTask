@@ -2,15 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
-using WpfApp1;
 using System.Linq;
+using TimeToTask;
 
 namespace WorkWithDataBase
 {
     public class PostgreSql
     {
-        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;";
+        private string connectionString = "Server=; port=; Database=; User Id=; Password=;";
         public void AddNewUser(string login, string mail, string password)
         {
             string query = "INSERT INTO users (login, mail, password) VALUES (@login, @mail, @password)";

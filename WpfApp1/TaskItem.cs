@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfApp1
+namespace TimeToTask
 {
     public class TaskItem : INotifyPropertyChanged
     {
@@ -73,3 +73,4 @@ namespace WpfApp1
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
+

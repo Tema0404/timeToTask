@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -95,7 +94,7 @@ namespace TimeToTask
                     Foreground = (Brush)FindResource("PrimaryTextColor"),
                     HorizontalAlignment = HorizontalAlignment.Center
                 };
-                // Увеличенная точка (10x10)
+
                 Ellipse dot = new Ellipse
                 {
                     Width = 10,
@@ -127,22 +126,20 @@ namespace TimeToTask
 
             int completed = tasks.Count(t => t.IsCompletedOnDate(date));
 
-            // для будущих дат: если нет выполненных – акцентный цвет (план), иначе зелёный/жёлтый
             if (date.Date > DateTime.Today)
             {
                 if (completed == 0)
                     return (Brush)FindResource("AccentColor");
                 if (completed == tasks.Count)
-                    return new SolidColorBrush(Color.FromRgb(0x9E, 0xCE, 0x6A)); // зелёный
-                return new SolidColorBrush(Color.FromRgb(0xE0, 0xAF, 0x68));     // жёлтый (редко)
+                    return new SolidColorBrush(Color.FromRgb(0x9E, 0xCE, 0x6A)); 
+                return new SolidColorBrush(Color.FromRgb(0xE0, 0xAF, 0x68)); 
             }
 
-            // Для прошлых и сегодняшнего дня – стандартная логика
             if (completed == tasks.Count)
-                return new SolidColorBrush(Color.FromRgb(0x9E, 0xCE, 0x6A)); // зелёный
+                return new SolidColorBrush(Color.FromRgb(0x9E, 0xCE, 0x6A));
             if (completed == 0)
-                return new SolidColorBrush(Color.FromRgb(0xF7, 0x76, 0x8E)); // красный
-            return new SolidColorBrush(Color.FromRgb(0xE0, 0xAF, 0x68));     // жёлтый
+                return new SolidColorBrush(Color.FromRgb(0xF7, 0x76, 0x8E)); 
+            return new SolidColorBrush(Color.FromRgb(0xE0, 0xAF, 0x68));    
         }
 
         private List<TaskItem> GetTasksForDate(DateTime date)

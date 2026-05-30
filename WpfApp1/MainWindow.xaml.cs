@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using WorkWithDataBase;
 using WpfApp1;
 
@@ -278,7 +277,6 @@ namespace TimeToTask
             this.Close();
         }
 
-        // Анимация переключения темы
         private async void AnimateThemeSwitch(bool toDark)
         {
             var btn = ThemeToggleBtn;

@@ -194,8 +194,8 @@
                     Click="btnAccSettings_Click" Style="{StaticResource PastelButton}"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock x:Name="DateText" FontSize="24" FontWeight="Bold" Foreground="{StaticResource PrimaryTextColor}" VerticalAlignment="Center"/>
-                <Button x:Name="btnToCalendar" Content="📆 Календарь" Margin="30,0,0,0" Click="btnToCalendar_Click" Style="{StaticResource PastelButton}"/>
+                <TextBlock x:Name="DateText" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" VerticalAlignment="Center"/>
+                <Button x:Name="btnToCalendar" Content="📆 Календарь" Margin="30,0,0,0" Click="btnToCalendar_Click" Style="{DynamicResource PastelButton}"/>
                 
             </StackPanel>
         </Grid>
@@ -263,28 +263,36 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Background="{StaticResource PanelBackground}" BorderThickness="0,0,1,0" BorderBrush="{StaticResource BorderColor}">
-                <StackPanel Margin="20">
-                    <TextBlock Text="Личный кабинет" FontSize="22" FontWeight="Bold" Foreground="{StaticResource PrimaryTextColor}" HorizontalAlignment="Center" Margin="0,20,0,30"/>
+            <Border Grid.Column="0" Background="{DynamicResource PanelBackground}" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource BorderColor}">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="1*" MinHeight="0"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="60"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Личный кабинет" Grid.Row="0" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Center"/>
 
-                    <ToggleButton x:Name="ThemeToggleBtn" Content="🌙" Width="40" Margin="0, 0, 0, 15"
-                            Style="{StaticResource NavToggleButton}" Checked="ThemeToggleBtn_Checked"
+                    <Button x:Name="btnExitAcc" Content="🚪 Выйти из аккаунта" Grid.Row="1"
+                            Height="40" Style="{DynamicResource PastelButton}" FontSize="15" Click="btnExitAcc_Click"/>
+
+                    <Button x:Name="btnChangePassword" Content="🔐 Сменить пароль" Grid.Row="2"
+                            Height="40" Margin="0,0,0,15" Style="{DynamicResource PastelButton}" FontSize="15" Click="btnChangePassword_Click"/>
+
+                    <ToggleButton x:Name="ThemeToggleBtn" Content="🌙" Grid.Row="4" Width="50" Height="30"
+                            Style="{DynamicResource NavToggleButton}" Checked="ThemeToggleBtn_Checked"
                             Unchecked="ThemeToggleBtn_Unchecked"/>
 
-                    <Button x:Name="btnChangePassword" Content="🔐 Сменить пароль" 
-                            Height="40" Margin="0,0,0,15" Style="{StaticResource PastelButton}" FontSize="15" Click="btnChangePassword_Click"/>
-
-                    <Button x:Name="btnExitAcc" Content="🚪 Выйти из аккаунта" 
-                            Height="40" Style="{StaticResource PastelButton}" FontSize="15" Background="#FFE5E5" BorderBrush="#FFCCCC" Click="btnExitAcc_Click"/>
-
                     <Button x:Name="btnDeleteAccount" 
-                            Grid.Row="1" 
+                            Grid.Row="5" 
                             Content="❌ Удалить аккаунт" 
-                            Style="{StaticResource DangerPastelButton}" 
-                            Margin="20,10,20,20" 
+                            Style="{DynamicResource DangerPastelButton}" 
+                            
                             VerticalAlignment="Bottom"
                             Click="btnDeleteAccount_Click"/>
-                </StackPanel>
+                </Grid>
             </Border>
 
             <Border Grid.Column="1" Background="#01000000" MouseDown="ClosePanel_MouseDown"/>
