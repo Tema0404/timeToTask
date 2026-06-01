@@ -44,21 +44,6 @@ namespace WorkWithDataBase
                 }
             }
         }
-        public void DeleteTask(int uid, int idTask)
-        {
-            string query = "DELETE FROM tasks WHERE user_id = @uid and id = @idTask";
-            using(var sqlConnection = new NpgsqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using(var command = new NpgsqlCommand(query, sqlConnection))
-                {
-                    command.Parameters.AddWithValue("@uid", uid);
-                    command.Parameters.AddWithValue("@idTask", idTask);
-
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
         private bool isUser(string login, string password)
         {
             string query = "SELECT COUNT(*) FROM users WHERE login = @login and password = @password";
@@ -187,15 +172,15 @@ namespace WorkWithDataBase
                 }
             }
         }
-        public void UpdateTaskDescription(int taskId, string newDescription)
+        public void UpdateTaskName(int taskId, string newName)
         {
-            string query = "UPDATE tasks SET description = @newDescription WHERE id = @taskId";
+            string query = "UPDATE tasks SET name_task = @newName WHERE id = @taskId";
             using(var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 using(var command = new NpgsqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@newDescription", newDescription);
+                    command.Parameters.AddWithValue("@newName", newName);
                     command.Parameters.AddWithValue("@taskId", taskId);
 
                     command.ExecuteNonQuery();

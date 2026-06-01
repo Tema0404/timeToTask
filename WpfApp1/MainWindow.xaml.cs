@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WorkWithDataBase;
-using WpfApp1;
 
 namespace TimeToTask
 {
@@ -21,7 +20,6 @@ namespace TimeToTask
         private ObservableCollection<DayItem> _dayItems;
         private System.Collections.Generic.List<MonthItem> _months;
         private DateTime _today = DateTime.Today;
-
         public bool IsClosed { get; private set; }
 
         public MainWindow(UserItem user)
@@ -161,11 +159,11 @@ namespace TimeToTask
             var task = btn?.Tag as TaskItem;
             if (task == null) return;
 
-            string result = InputDialog.Show("Редактировать задачу", "Новое описание", task.Description);
+            string result = InputDialog.Show("Редактировать задачу", "Новое название", task.Description);
             if (!string.IsNullOrWhiteSpace(result))
             {
                 task.Description = result;
-                _db.UpdateTaskDescription(task.Id, result);
+                _db.UpdateTaskName(task.Id, result);
                 RefreshTodayTasks();
             }
         }
@@ -364,20 +362,14 @@ namespace TimeToTask
         {
             if (_isDarkTheme == isDark) return;
 
-
             AnimateThemeSwitch(isDark);
-
-
             ApplyTheme(isDark);
-
-
             App.NotifyThemeChanged(isDark);
         }
 
         #region ЛОГИКА БОКОВОЙ ПАНЕЛИ
         private void btnDeleteAccount_Click(object sender, RoutedEventArgs e)
         {
-            // Показываем окно подтверждения с текстом предупреждения
             MessageBoxResult result = MessageBox.Show(
                 "Вы уверены, что хотите удалить аккаунт?\nВсе ваши данные будут безвозвратно потеряны.",
                 "Предупреждение об удалении",
@@ -389,7 +381,6 @@ namespace TimeToTask
             {
                 try
                 {
-                    // Вызываем метод удаления из бд (предполагается, что _userId доступен в текущем контексте)
                     WorkWithDataBase.PostgreSql db = new WorkWithDataBase.PostgreSql();
                     db.DeleteUser(_currentUser.id);
 
@@ -398,7 +389,6 @@ namespace TimeToTask
                     EntryWindow loginWindow = new EntryWindow();
                     loginWindow.Show();
 
-                    // Закрываем текущее главное окно приложения
                     Window.GetWindow(this).Close();
                 }
                 catch (Exception ex)
@@ -408,7 +398,6 @@ namespace TimeToTask
             }
         }
 
-        // Нажатие на кнопку "👤 Профиль" — открываем панель
         private void btnAccSettings_Click(object sender, RoutedEventArgs e)
         {
             AccountSidePanel.Visibility = AccountSidePanel.Visibility == Visibility.Visible
@@ -416,13 +405,11 @@ namespace TimeToTask
                 : Visibility.Visible;
         }
 
-        // Закрытие панели по клику в пустую область справа
         private void ClosePanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
             AccountSidePanel.Visibility = Visibility.Collapsed;
         }
 
-        // Кнопка: Выйти из аккаунта
         private void btnExitAcc_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(
@@ -434,7 +421,6 @@ namespace TimeToTask
 
             if (result == MessageBoxResult.Yes)
             {
-                // Открываем окно входа
                 EntryWindow loginWindow = new EntryWindow();
                 loginWindow.Show();
 
@@ -443,12 +429,9 @@ namespace TimeToTask
             }
         }
 
-        // Кнопка: Сменить пароль
         private void btnChangePassword_Click(object sender, RoutedEventArgs e)
         {
             AccountSidePanel.Visibility = Visibility.Collapsed;
-
-            // Передаем id авторизованного пользователя из объекта _currentUser
             ChangePasswordWindow changePassWindow = new ChangePasswordWindow(_currentUser.id);
             changePassWindow.Owner = this;
             changePassWindow.ShowDialog();

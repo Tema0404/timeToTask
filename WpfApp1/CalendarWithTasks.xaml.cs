@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WorkWithDataBase;
-using WpfApp1;
 
 namespace TimeToTask
 {
@@ -20,7 +19,6 @@ namespace TimeToTask
         private readonly List<MonthItem> _months;
         private bool _isDarkTheme = false;
         private static bool _globalDarkTheme = false;
-
         private PostgreSql _db;
         private UserItem _currentUser;
 
@@ -84,7 +82,7 @@ namespace TimeToTask
             for (int day = 1; day <= daysInMonth; day++)
             {
                 DateTime date = new DateTime(_currentMonth.Year, _currentMonth.Month, day);
-                Button btn = new Button { Tag = date, Style = (Style)FindResource("DayButton") };
+                Button btn = new Button { Tag = date, Style = (Style)Application.Current.FindResource("DayButton") };
 
                 StackPanel sp = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center };
                 TextBlock dayText = new TextBlock
@@ -229,22 +227,22 @@ namespace TimeToTask
             Button removeDayBtn = new Button
             {
                 Content = "✕",
-                Style = (Style)FindResource("IconButton"),
+                Style = (Style)Application.Current.FindResource("IconButton"),
                 Tag = task,
                 ToolTip = "Убрать из этого дня"
             };
             removeDayBtn.Click += RemoveTaskFromDay_Click;
             rightPanel.Children.Add(removeDayBtn);
 
-            Button noteBtn = new Button { Content = "📄", Style = (Style)FindResource("IconButton"), Tag = task, ToolTip = "Заметка" };
+            Button noteBtn = new Button { Content = "📄", Style = (Style)Application.Current.FindResource("IconButton"), Tag = task, ToolTip = "Заметка" };
             noteBtn.Click += ShowNote_Click;
             rightPanel.Children.Add(noteBtn);
 
-            Button editBtn = new Button { Content = "✎", Style = (Style)FindResource("IconButton"), Tag = task, ToolTip = "Редактировать" };
+            Button editBtn = new Button { Content = "✎", Style = (Style)Application.Current.FindResource("IconButton"), Tag = task, ToolTip = "Редактировать название" };
             editBtn.Click += EditTask_Click;
             rightPanel.Children.Add(editBtn);
 
-            Button deleteBtn = new Button { Content = "🗑", Style = (Style)FindResource("IconButton"), Tag = task, ToolTip = "Удалить" };
+            Button deleteBtn = new Button { Content = "🗑", Style = (Style)Application.Current.FindResource("IconButton"), Tag = task, ToolTip = "Удалить" };
             deleteBtn.Click += DeleteTask_Click;
             rightPanel.Children.Add(deleteBtn);
 
@@ -329,12 +327,19 @@ namespace TimeToTask
         {
             if (sender is Button btn && btn.Tag is TaskItem task)
             {
-                string result = InputDialog.Show("Редактировать задачу", "Новое описание", task.Description);
+                string result = InputDialog.Show("Редактировать задачу", "Новое название", task.Description);
                 if (!string.IsNullOrWhiteSpace(result))
                 {
-                    task.Description = result;
-                    _db.UpdateTaskDescription(task.Id, result);
-                    if (_selectedDate.HasValue) FillTasksPanel(_selectedDate.Value);
+                    try
+                    {
+                        task.Description = result;
+                        _db.UpdateTaskName(task.Id, result);
+                        if (_selectedDate.HasValue) FillTasksPanel(_selectedDate.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при обновлении названия:\n{ex.Message}\n\n{ex.StackTrace}");
+                    }
                 }
             }
         }

@@ -1,7 +1,5 @@
 ﻿using System.Windows;
-using System.Windows.Input;
 using WorkWithDataBase;
-using WpfApp1;
 
 namespace TimeToTask
 {
@@ -21,9 +19,13 @@ namespace TimeToTask
 
         private void btnRegistration_Click(object sender, RoutedEventArgs e)
         {
-            string login = txtgLogin.Text;
-            string password = txtPassword.Password;
-            string passwordReplay = txtPasswordReplay.Password;
+            string login = txtLogin.Text;
+            string password = txtPassword.Visibility == Visibility.Visible
+                ? txtPassword.Password
+                : txtPasswordTextBox.Text;
+            string passwordReplay = txtPasswordReplay.Visibility == Visibility.Visible
+                ? txtPasswordReplay.Password
+                : txtPasswordTextBoxReplay.Text;
             string email = txtMail.Text;
             PostgreSql connect = new PostgreSql();
 
@@ -31,8 +33,7 @@ namespace TimeToTask
             if (!PasswordVerification.Equal(password, passwordReplay)) return;
             if (!PasswordVerification.Check(password)) return;
             if (!EmailVerification.Check(email, connect)) return;
-            
-
+           
             connect.AddNewUser(login, email, password);
             int newUid = connect.GetUserId(login, password);
             UserItem newUser = new UserItem(newUid, login, password, email);
@@ -49,52 +50,49 @@ namespace TimeToTask
             Application.Current.MainWindow = calendarWindow;
             this.Close();
         }
-        #region Логика кнопки-глазика для пароля
-        private void btnTogglePassword_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            btnTogglePassword.Content = "🙈";
-            btnTogglePasswordReplay.Content = "🙈";
 
+        #region Переключатели видимости паролей (Глаз)
+        private void ToggleFirst_Checked(object sender, RoutedEventArgs e)
+        {
             txtPasswordTextBox.Text = txtPassword.Password;
-            txtPasswordTextBoxReplay.Text = txtPasswordReplay.Password;
 
             txtPassword.Visibility = Visibility.Collapsed;
-            txtPasswordReplay.Visibility = Visibility.Collapsed;
             txtPasswordTextBox.Visibility = Visibility.Visible;
-            txtPasswordTextBoxReplay.Visibility = Visibility.Visible;
+
             txtPasswordTextBox.Focus();
-
+            txtPasswordTextBox.SelectionStart = txtPasswordTextBox.Text.Length;
         }
 
-        private void btnTogglePassword_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        private void ToggleFirst_Unchecked(object sender, RoutedEventArgs e)
         {
-            ResetPasswordVisibility();
+            txtPassword.Password = txtPasswordTextBox.Text;
+
+            txtPasswordTextBox.Visibility = Visibility.Collapsed;
+            txtPassword.Visibility = Visibility.Visible;
+
+            txtPassword.Focus();
         }
 
-        private void btnTogglePassword_MouseLeave(object sender, MouseEventArgs e)
+        private void ToggleReplay_Checked(object sender, RoutedEventArgs e)
         {
-            ResetPasswordVisibility();
+            txtPasswordTextBoxReplay.Text = txtPasswordReplay.Password;
+
+            txtPasswordReplay.Visibility = Visibility.Collapsed;
+            txtPasswordTextBoxReplay.Visibility = Visibility.Visible;
+
+            txtPasswordTextBoxReplay.Focus();
+            if (txtPasswordTextBoxReplay.Text.Length > 0)
+                txtPasswordTextBoxReplay.SelectionStart = txtPasswordTextBoxReplay.Text.Length;
         }
 
-        private void ResetPasswordVisibility()
+        private void ToggleReplay_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (txtPasswordTextBox.Visibility == Visibility.Visible || 
-                txtPasswordTextBoxReplay.Visibility == Visibility.Visible)
-            {
-                btnTogglePassword.Content = "👁";
-                btnTogglePasswordReplay.Content = "👁";
+            txtPasswordReplay.Password = txtPasswordTextBoxReplay.Text;
 
-                txtPassword.Password = txtPasswordTextBox.Text;
-                txtPasswordReplay.Password = txtPasswordTextBoxReplay.Text;
-
-                txtPasswordTextBox.Visibility = Visibility.Collapsed;
-                txtPasswordTextBoxReplay.Visibility = Visibility.Collapsed;
-
-                txtPassword.Visibility = Visibility.Visible;
-                txtPasswordReplay.Visibility = Visibility.Visible;
-
-                txtPassword.Focus();
-            }
+            txtPasswordTextBoxReplay.Visibility = Visibility.Collapsed;
+            txtPasswordReplay.Visibility = Visibility.Visible;
+            
+            txtPasswordReplay.Focus();
         }
 
         #endregion

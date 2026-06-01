@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TimeToTask"
         mc:Ignorable="d"
-        Title="Вход в аккаунт" Height="720" Width="1280"
+        Title="Авторизация" Height="720" Width="1280"
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource WindowBackground}">
-    
+
     <Grid Width="300">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" MinHeight="120"/>
@@ -23,33 +23,28 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Orientation="Vertical">
-            <TextBlock Text="Вход"  FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <!-- Заголовок -->
+            <TextBlock Text="Вход"  FontSize="50"  FontWeight="Bold" Foreground="{StaticResource PrimaryTextColor}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
-            <TextBlock Text="Логин" FontSize="24" TextAlignment="Center" Margin="20"/>
-            <TextBox x:Name="txtLogin" Margin="5" Height="25" Width="150" FontSize="18"/>
-
-            <TextBlock Text="Пароль" FontSize="24" TextAlignment="Center" Margin="20"/>
-
-            <Grid Width="185" HorizontalAlignment="Center" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="30"/>
-                </Grid.ColumnDefinitions>
-
-                <Grid Grid.Column="0">
-                    <PasswordBox x:Name="txtPassword" Height="25" FontSize="18"/>
-                    <TextBox x:Name="txtPasswordReveal" Height="25" FontSize="18" Visibility="Collapsed"/>
-                </Grid>
-
-                <Button x:Name="btnTogglePassword" Grid.Column="1" Margin="5,0,0,0" Height="25" 
-                        Content="👁" FontSize="14" Padding="0" 
-                        VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                        Click="btnTogglePassword_Click"/>
+            <!-- Логин -->
+            <TextBlock Text="Логин" FontSize="24"  FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" TextAlignment="Center" Margin="20"/>
+            <Grid Width="180">
+                <TextBox x:Name="txtLogin" Style="{StaticResource AccountTextBox}"/>
             </Grid>
 
-            <Button x:Name="btnEnterAcc" Content="Войти" FontSize="24" Margin="20" Width="150" Height="35" Click="btnEnterAcc_Click"/>
+            <!-- Пароль -->
+            <TextBlock Text="Пароль" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" TextAlignment="Center" Margin="20"/>
+            <Grid Width="180">
+                <TextBox x:Name="txtPasswordReveal" Style="{StaticResource AccountTextBox}"/>
+                <PasswordBox x:Name="txtPassword" Style="{StaticResource AccountPasswordBox}" Visibility="Visible"/>
+                <ToggleButton x:Name="btnTogglePassword" Style="{StaticResource EyeToggleButton}" HorizontalAlignment="Left" Margin="146,0,0,0" Click="btnTogglePassword_Click" Height="39" VerticalAlignment="Top"/>
+            </Grid>
+        
+            <!-- Вход -->
+            <Button x:Name="btnEnterAcc" Content="Войти" Style="{StaticResource ActionPastelButton}" Background="{StaticResource AccentColor}" Foreground="White" Margin="20" Width="150" Click="btnEnterAcc_Click"/>
 
-            <TextBlock TextAlignment="Center" FontSize="20" Margin="20">
+            <!-- Переход к регистрации -->
+            <TextBlock TextAlignment="Center" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource SecondaryTextColor}" Margin="20">
                 Нет аккаунта?
                 <LineBreak/>
                 <Hyperlink Click="RegistrtionHyperLink_Click">

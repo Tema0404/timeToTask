@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using WorkWithDataBase;
-using WpfApp1;
 
 namespace TimeToTask
 {

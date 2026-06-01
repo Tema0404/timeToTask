@@ -4,7 +4,13 @@
              xmlns:local="clr-namespace:TimeToTask"
              StartupUri="EntryWindow.xaml">
     <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="InputFields.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
+        
+        
         <!--  ГЛОБАЛЬНЫЕ КИСТИ   -->
         <SolidColorBrush x:Key="WindowBackground" Color="#FDF5F0"/>
         <SolidColorBrush x:Key="PrimaryTextColor" Color="#4A3B32"/>
@@ -25,6 +31,29 @@
         <SolidColorBrush x:Key="DayButtonHover" Color="#F5E5D5"/>
 
         <!--  СТИЛИ  -->
+
+        <Style x:Key="ActionPastelButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="15,8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ButtonHover}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="NavButton" TargetType="Button">
             <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
@@ -216,5 +245,6 @@
             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
             <Setter Property="Margin" Value="4"/>
         </Style>
+         </ResourceDictionary>
     </Application.Resources>
 </Application>
