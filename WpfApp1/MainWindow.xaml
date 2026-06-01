@@ -37,7 +37,7 @@
 
         <!-- Верхняя панель -->
         <Grid Grid.Row="0" Margin="30,15,30,15">
-            <Button x:Name="btnAccSettings" Content="👤 Профиль" 
+            <Button x:Name="btnAccSettings" Content="⚙️ Настройки" 
                     HorizontalAlignment="Left" VerticalAlignment="Center"
                     Click="btnAccSettings_Click" Style="{StaticResource PastelButton}"/>
 
