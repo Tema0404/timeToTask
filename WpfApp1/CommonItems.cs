@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using WpfApp1;
 
 namespace TimeToTask
 {
@@ -42,7 +41,7 @@ namespace TimeToTask
             Width = 360;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             ResizeMode = ResizeMode.NoResize;
-            SizeToContent = SizeToContent.WidthAndHeight; // авторазмер по содержимому
+            SizeToContent = SizeToContent.WidthAndHeight;
             Background = (Brush)Application.Current.Resources["WindowBackground"];
             BorderBrush = (Brush)Application.Current.Resources["BorderColor"];
             BorderThickness = new Thickness(1);
@@ -119,7 +118,7 @@ namespace TimeToTask
                 _textBox.BorderBrush = (Brush)Application.Current.Resources["BorderColor"];
                 _textBox.CaretBrush = (Brush)Application.Current.Resources["PrimaryTextColor"];
             }
-            // Обновляем цвет сообщения, если нужно
+            // Обновление цвета сообщения
             if (Content is StackPanel panel && panel.Children[0] is TextBlock prompt)
                 prompt.Foreground = (Brush)Application.Current.Resources["PrimaryTextColor"];
         }
@@ -127,7 +126,6 @@ namespace TimeToTask
         public static string Show(string title, string message, string defaultValue = "")
         {
             var dialog = new InputDialog(title, message, defaultValue);
-            dialog.Owner = Application.Current.MainWindow;
             return dialog.ShowDialog() == true ? dialog.Result : null;
         }
     }

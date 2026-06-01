@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using WorkWithDataBase;
-using TimeToTask;
 
-namespace WpfApp1
+namespace TimeToTask
 {
     public partial class ChangePasswordWindow : Window
     {
@@ -17,12 +15,9 @@ namespace WpfApp1
             _userId = userId;
             _db = new PostgreSql();
 
-            // Инициализируем текстовые поля, чтобы синхронизировать их со скрытыми PasswordBox
             txtOldPassword.Visibility = Visibility.Collapsed;
             txtNewPassword.Visibility = Visibility.Collapsed;
         }
-
-        // Синхронизация данных при ручном вводе в скрытый PasswordBox
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender == pwdOldPassword)
@@ -68,17 +63,13 @@ namespace WpfApp1
         }
 
         #endregion
-
-        // Кнопка отмены
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        // Сохранение и валидация
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            // Берем актуальный текст из TextBox (так как они всегда синхронизированы)
             string oldPassword = txtOldPassword.Text.Trim();
             string newPassword = txtNewPassword.Text.Trim();
 
@@ -96,13 +87,11 @@ namespace WpfApp1
 
             try
             {
-                // Проверяем корректность старого пароля через метод авторизации в вашей БД
                 var user = _db.AuthorizeUser(_userId.ToString(), oldPassword);
 
                 if (user != null)
                 {
                     if (!PasswordVerification.Check(newPassword)) return;
-                    // Вызываем метод смены пароля в вашем классе PostgreSql
                     _db.ChangePassword(_userId, newPassword);
 
                     MessageBox.Show("Пароль успешно обновлен!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);

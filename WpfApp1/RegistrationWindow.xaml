@@ -9,86 +9,47 @@
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource WindowBackground}">
-    <Grid>
-        <StackPanel Orientation="Vertical" Margin="500,100,500,1">
-            <TextBlock Text="Регистрация" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+    <Grid Width="300" VerticalAlignment="Center">
+        <StackPanel Orientation="Vertical" >
+            <TextBlock Text="Регистрация" FontSize="50"  FontWeight="Bold" Foreground="{StaticResource PrimaryTextColor}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
-            <TextBlock Text="Логин" FontSize="24" TextAlignment="Center" Margin="20"/>
-            <TextBox x:Name="txtgLogin" Margin="5" Height="25" Width="200" FontSize="18"/>
-
-            <TextBlock Text="Пароль" FontSize="24" TextAlignment="Center" Margin="20"/>
-            <Grid Width="200" Height="25" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <PasswordBox x:Name="txtPassword" 
-                             Grid.Column="0" 
-                             Grid.ColumnSpan="2"
-                             FontSize="18"
-                             Padding="2,0,30,0"
-                             VerticalContentAlignment="Center"/>
-                <TextBox x:Name="txtPasswordTextBox" 
-                         Grid.Column="0" 
-                         Grid.ColumnSpan="2"
-                         FontSize="18" 
-                         Visibility="Collapsed"
-                         Padding="2,0,30,0"
-                         VerticalContentAlignment="Center"/>
-                <Button x:Name="btnTogglePassword" 
-                        Grid.Column="1"
-                        Width="25" 
-                        Height="23" 
-                        Content="👁" 
-                        Background="Transparent" 
-                        BorderThickness="0"
-                        Margin="0,0,3,0"
-                        Cursor="Hand"
-                        VerticalAlignment="Center"
-                        PreviewMouseDown="btnTogglePassword_PreviewMouseDown"
-                        PreviewMouseUp="btnTogglePassword_PreviewMouseUp"
-                        MouseLeave="btnTogglePassword_MouseLeave"/>
+            <!-- Логин -->
+            <TextBlock Text="Логин" FontSize="24"  FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" TextAlignment="Center" Margin="20"/>
+            <Grid Width="180">
+                <TextBox x:Name="txtLogin" Style="{StaticResource AccountTextBox}"/>
             </Grid>
 
-            <TextBlock Text="Повторите пароль" FontSize="24" TextAlignment="Center" Margin="20"/>
-            <Grid Width="200" Height="25" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <PasswordBox x:Name="txtPasswordReplay" 
-                     Grid.Column="0" 
-                     Grid.ColumnSpan="2"
-                     FontSize="18"
-                     Padding="2,0,30,0"
-                     VerticalContentAlignment="Center"/>
-                <TextBox x:Name="txtPasswordTextBoxReplay" 
-                     Grid.Column="0" 
-                     Grid.ColumnSpan="2"
-                     FontSize="18" 
-                     Visibility="Collapsed"
-                     Padding="2,0,30,0"
-                     VerticalContentAlignment="Center"/>
-                <Button x:Name="btnTogglePasswordReplay" 
-                    Grid.Column="1"
-                    Width="25" 
-                    Height="23" 
-                    Content="👁" 
-                    Background="Transparent" 
-                    BorderThickness="0"
-                    Margin="0,0,3,0"
-                    Cursor="Hand"
-                    VerticalAlignment="Center"
-                    PreviewMouseDown="btnTogglePassword_PreviewMouseDown"
-                    PreviewMouseUp="btnTogglePassword_PreviewMouseUp"
-                    MouseLeave="btnTogglePassword_MouseLeave"/>
+            <!-- Пароль -->
+            <TextBlock Text="Пароль" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" TextAlignment="Center" Margin="20"/>
+            <Grid Width="180">
+                <TextBox x:Name="txtPasswordTextBox" Style="{DynamicResource AccountTextBox}"/>
+                <PasswordBox x:Name="txtPassword" Style="{DynamicResource AccountPasswordBox}" 
+                             Visibility="Visible"/>
+                <ToggleButton x:Name="btnTogglePassword" Style="{DynamicResource EyeToggleButton}" 
+                              HorizontalAlignment="Right" Margin="0,0,5,0" Checked="ToggleFirst_Checked" Unchecked="ToggleFirst_Unchecked"/>
             </Grid>
 
-            <TextBlock Text="Почта" FontSize="24" TextAlignment="Center" Margin="20"/>
-            <TextBox x:Name="txtMail" Margin="5" Height="25" Width="200" FontSize="18"/>
+            <!-- Пароль повторно -->
+            <TextBlock Text="Повторите пароль" FontSize="24" FontWeight="SemiBold" 
+                       Foreground="{DynamicResource SecondaryTextColor}" TextAlignment="Center" Margin="20"/>
+            <Grid Width="180">
+                <TextBox x:Name="txtPasswordTextBoxReplay" Style="{DynamicResource AccountTextBox}"/>
+                <PasswordBox x:Name="txtPasswordReplay" Style="{DynamicResource AccountPasswordBox}" 
+                             Visibility="Visible"/>
+                <ToggleButton x:Name="btnTogglePasswordReplay" Style="{DynamicResource EyeToggleButton}" HorizontalAlignment="Right" Margin="0,0,5,0" Checked="ToggleReplay_Checked" Unchecked="ToggleReplay_Unchecked"/>
+            </Grid>
 
-            <Button x:Name="btnRegistration" Content="Регистрация" FontSize="24" Margin="40" Height="40" Width="150" Click="btnRegistration_Click"/>
-            <TextBlock TextAlignment="Center" FontSize="20">
+            <!-- Почта -->
+            <TextBlock Text="Почта" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryTextColor}" TextAlignment="Center" Margin="20"/>
+            <Grid Width="180">
+                <TextBox x:Name="txtMail" Style="{StaticResource AccountTextBox}"/>
+            </Grid>
+
+            <!-- Регистрация -->
+            <Button x:Name="btnRegistration" Content="Регистрация" Style="{StaticResource ActionPastelButton}" Background="{StaticResource AccentColor}" Foreground="White" Margin="40" Width="150" Click="btnRegistration_Click"/>
+
+            <!-- Переход ко входу -->
+            <TextBlock TextAlignment="Center" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource SecondaryTextColor}">
                 Есть аккаунт?
                 <LineBreak/>
                     <Hyperlink Click="EntryHyperLink_Click">

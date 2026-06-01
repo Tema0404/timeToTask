@@ -2,84 +2,60 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
-using WpfApp1;
 using System.Linq;
+using TimeToTask;
 
 namespace WorkWithDataBase
 {
-    public interface DataBase
+    public class PostgreSql
     {
-        void ConnectionReader();
-    }
-    public class PostgreSql : DataBase
-    {
-
-        public PostgreSql()
+        private string connectionString = "Server=; port=; Database=; User Id=; Password=;";
+        public void AddNewUser(string login, string mail, string password)
         {
-            
-        }
-
-        private string connectionString = "Server=localhost; port=5432; Database=timeToTask; User Id=postgres; Password=postgre;";
-
-
-        private void DoCommand(string InputCommand)
-        {
-            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            string query = "INSERT INTO users (login, mail, password) VALUES (@login, @mail, @password)";
+            using (var sqlConnection = new NpgsqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand(InputCommand, sqlConnection))
+                using(var command = new NpgsqlCommand(query, sqlConnection))
                 {
-                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@login", login);
+                    command.Parameters.AddWithValue("@mail", mail);
+                    command.Parameters.AddWithValue("@password", password);
+
                     command.ExecuteNonQuery();
                 }
             }
         }
-        private int ExeScalarQuery(string query)
+        public void AddTask(int uid, string nameTask, string description, DateTime? appointmentDay)
         {
+            string query = "INSERT INTO tasks (user_id, name_task, description, appointment_day) " +
+                $"VALUES (@uid, @nameTask, @description, @appointmentDay)";
+            using(var sqlConnection = new NpgsqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using(var command = new NpgsqlCommand(query, sqlConnection))
+                {
+                    command.Parameters.AddWithValue("@uid", uid);
+                    command.Parameters.AddWithValue("@nameTask", nameTask);
+                    command.Parameters.AddWithValue("@description", description);
+                    command.Parameters.AddWithValue("@appointmentDay", appointmentDay);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        private bool isUser(string login, string password)
+        {
+            string query = "SELECT COUNT(*) FROM users WHERE login = @login and password = @password";
             using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
             {
                 sqlConnection.Open();
                 using (NpgsqlCommand command = new NpgsqlCommand(query, sqlConnection))
                 {
-                    command.CommandType = CommandType.Text;
-                    object res = command.ExecuteScalar();
+                    command.Parameters.AddWithValue("@login", login);
+                    command.Parameters.AddWithValue("@password", password);
 
-                    if (res == null || res == DBNull.Value)
-                        return 0;
-                    return Convert.ToInt32(res);
-                }
-            }
-        }
-        public void ConnectionReader()
-        {
-
-        }
-        public void AddNewUser(string login, string mail, string password)
-        {
-            string query = $"INSERT INTO users (login, mail, password) VALUES ('{login}', '{mail}', '{password}')";
-            DoCommand(query);
-        }
-        public void AddTask(int uid, string nameTask, string description, DateTime? appointmentDay)
-        {
-            string query = $"INSERT INTO tasks (user_id, name_task, description, appointment_day) " +
-                $"VALUES ({uid}, '{nameTask}', '{description}', '{appointmentDay}')";
-            DoCommand(query);
-        }
-        public void DeleteTask(int uid, int idTask)
-        {
-            string query = $"DELETE FROM tasks WHERE user_id = {uid} and id = {idTask}";
-            DoCommand(query);
-        }
-        private bool isUser(string login, string password)
-        {
-            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                string query = $"SELECT COUNT(*) FROM users WHERE login = '{login}' and password = '{password}'";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
-                {
-                    long count = (long)cmd.ExecuteScalar();
+                    long count = (long)command.ExecuteScalar();
                     return count > 0;
                 }
             }
@@ -88,70 +64,78 @@ namespace WorkWithDataBase
         {
             if (!isUser(login, password))
                 return -1;
+
+            string query = "SELECT id FROM users WHERE login = @login AND password = @password";
+
             using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                string query = $"SELECT id FROM users WHERE login = '{login}' AND password = '{password}'";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                using (NpgsqlCommand command = new NpgsqlCommand(query, sqlConnection))
                 {
-                    object result = cmd.ExecuteScalar();
+                    command.Parameters.AddWithValue("@login", login);
+                    command.Parameters.AddWithValue ("@password", password);
+
+                    object result = command.ExecuteScalar();
                     return Convert.ToInt32(result);
                 }
             }
         }
         public string GetUserEmail(int uid)
         {
+            string query = "SELECT mail FROM users WHERE id = @uid";
             using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                string query = $"SELECT mail FROM users WHERE id = {uid}";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                using (NpgsqlCommand command = new NpgsqlCommand(query, sqlConnection))
                 {
-                    object result = cmd.ExecuteScalar();
+                    command.Parameters.AddWithValue("@uid", uid);
+
+                    object result = command.ExecuteScalar();
                     return result.ToString();
                 }
             }
         }
         public void isComplete(int uid, int idTask)
         {
+            string query = "UPDATE tasks SET completed = TRUE WHERE user_id = @uid and id = @idTask";
             using (NpgsqlConnection sqlConnetion = new NpgsqlConnection(connectionString))
             {
                 sqlConnetion.Open();
-                string query = $"UPDATE tasks SET completed = TRUE WHERE user_id = {uid} and id = {idTask}";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnetion))
+                using (NpgsqlCommand command = new NpgsqlCommand(query, sqlConnetion))
                 {
-                    cmd.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@uid", uid);
+                    command.Parameters.AddWithValue("@idTask", idTask);
+
+                    command.ExecuteNonQuery();
                 }
             }
         }
-
-        //Метод для проверки существования пароля в бд(для валидации)
         public bool IsLoginExists(string login)
         {
+            string query = "SELECT COUNT(*) FROM users WHERE LOWER(\"login\") = LOWER(@login)";
             using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                string query = "SELECT COUNT(*) FROM users WHERE LOWER(\"login\") = LOWER(@login)";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                using (NpgsqlCommand command = new NpgsqlCommand(query, sqlConnection))
                 {
-                    cmd.Parameters.AddWithValue("@login", login);
-                    long count = Convert.ToInt64(cmd.ExecuteScalar());
+                    command.Parameters.AddWithValue("@login", login);
+
+                    long count = Convert.ToInt64(command.ExecuteScalar());
                     return count > 0;
                 }
             }
         }
-        //Метод для проверки существования почты в бд(для валидации)
         public bool IsEmailExists(string email)
         {
+            string query = "SELECT COUNT(*) FROM users WHERE LOWER(\"mail\") = LOWER(@email)";
             using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                string query = "SELECT COUNT(*) FROM users WHERE LOWER(\"mail\") = LOWER(@email)";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                using (NpgsqlCommand command = new NpgsqlCommand(query, sqlConnection))
                 {
-                    cmd.Parameters.AddWithValue("@email", email);
+                    command.Parameters.AddWithValue("@email", email);
 
-                    var result = cmd.ExecuteScalar();
+                    var result = command.ExecuteScalar();
                     long count = Convert.ToInt64(result);
                     return count > 0;
                 }
@@ -160,69 +144,142 @@ namespace WorkWithDataBase
         public int AddFullTask(int uid, string nameTask, string description, DateTime? appointmentDay,
             bool isPermanent, string recurringDays, DateTime? month, string excludedDates)
         {
-            string query = $@"
-        INSERT INTO tasks (user_id, name_task, description, appointment_day, permanent, recurring_days, month, excluded_dates)
-        VALUES ({uid}, '{nameTask}', '{description}', {(appointmentDay.HasValue ? $"'{appointmentDay.Value:yyyy-MM-dd}'" : "NULL")},
-                {isPermanent}, {(recurringDays != null ? $"'{recurringDays}'" : "NULL")},
-                {(month.HasValue ? $"'{month.Value:yyyy-MM-dd}'" : "NULL")},
-                {(excludedDates != null ? $"'{excludedDates}'" : "NULL")})
-        RETURNING id";
-            using (var conn = new NpgsqlConnection(connectionString))
+            string query = @"
+                INSERT INTO tasks (user_id, name_task, description, appointment_day, permanent, recurring_days, month, excluded_dates)
+                VALUES (@uid, @nameTask, @description, @appointmentDay,
+                @isPermanent, @recurringDays,
+                @month, @excludedDates) RETURNING id";
+            using (var connection = new NpgsqlConnection(connectionString))
             {
-                conn.Open();
-                using (var cmd = new NpgsqlCommand(query, conn))
+                connection.Open();
+                using (var command = new NpgsqlCommand(query, connection))
                 {
-                    return Convert.ToInt32(cmd.ExecuteScalar());
+                    command.Parameters.AddWithValue("@uid", uid);
+                    command.Parameters.AddWithValue("@nameTask", nameTask);
+                    command.Parameters.AddWithValue("@description", description);
+                    command.Parameters.AddWithValue("@appointmentDay",
+                        appointmentDay.HasValue ? (object)appointmentDay.Value : DBNull.Value);
+                    command.Parameters.AddWithValue("@isPermanent", isPermanent);
+                    command.Parameters.AddWithValue("@recurringDays",
+                        recurringDays ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@month",
+                        month.HasValue ? (object)month.Value : DBNull.Value);
+                    command.Parameters.AddWithValue("@excludedDates",
+                        excludedDates ?? (object)DBNull.Value);
+
+                    var res = Convert.ToInt32(command.ExecuteScalar());
+                    return res;
                 }
             }
         }
-        public void UpdateTaskDescription(int taskId, string newDescription)
+        public void UpdateTaskName(int taskId, string newName)
         {
-            string query = $"UPDATE tasks SET description = '{newDescription}' WHERE id = {taskId}";
-            DoCommand(query);
+            string query = "UPDATE tasks SET name_task = @newName WHERE id = @taskId";
+            using(var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                using(var command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@newName", newName);
+                    command.Parameters.AddWithValue("@taskId", taskId);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
         public void UpdateTaskNote(int taskId, string note)
         {
-            string query = $"UPDATE tasks SET description = '{note}' WHERE id = {taskId}";
-            DoCommand(query);
+            string query = "UPDATE tasks SET description = @note WHERE id = @taskId";
+            using(var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                using(var command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@note", note);
+                    command.Parameters.AddWithValue("@taskId", taskId);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         public void AddCompletion(int taskId, DateTime date)
         {
-            string query = $"INSERT INTO task_completions (task_id, completion_date) VALUES ({taskId}, '{date:yyyy-MM-dd}') ON CONFLICT DO NOTHING";
-            DoCommand(query);
+            string query = "INSERT INTO task_completions (task_id, completion_date) VALUES (@taskId, @date) ON CONFLICT DO NOTHING";
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                using (var command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@taskId", taskId);
+                    command.Parameters.AddWithValue("@date", date.Date);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
         public void RemoveCompletion(int taskId, DateTime date)
         {
-            string query = $"DELETE FROM task_completions WHERE task_id = {taskId} AND completion_date = '{date:yyyy-MM-dd}'";
-            DoCommand(query);
+            string query = "DELETE FROM task_completions WHERE task_id = @taskId AND completion_date = @date";
+            using(var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                using(var command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@taskId", taskId);
+                    command.Parameters.AddWithValue("@date", date.Date);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
         public void AddExcludedDate(int taskId, DateTime date)
         {
-            // Обновляем поле excluded_dates в таблице tasks
-            string query = $@"
-        UPDATE tasks SET excluded_dates = CONCAT(COALESCE(excluded_dates, ''), '{date:yyyy-MM-dd},')
-        WHERE id = {taskId}";
-            DoCommand(query);
+            string formattedDate = date.Date.ToString("yyyy-MM-dd");
+            string query = @"
+                UPDATE tasks SET excluded_dates = CONCAT(COALESCE(excluded_dates, ''), @date)
+                WHERE id = @taskId";
+            using(var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                using(var command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@date", formattedDate);
+                    command.Parameters.AddWithValue("@taskId", taskId);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
         public void DeleteTask(int taskId)
         {
-            string query = $"DELETE FROM tasks WHERE id = {taskId}";
-            DoCommand(query);
+            string query = "DELETE FROM tasks WHERE id = @taskId";
+            using(var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                using(var command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@taskId", taskId);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
         public List<TaskItem> GetTasksByUser(int uid)
         {
             var tasks = new List<TaskItem>();
-            using (var conn = new NpgsqlConnection(connectionString))
-            {
-                conn.Open();
-                // Загружаем задачи
-                string query = $@"
+            string query = @"
             SELECT id, name_task, description, appointment_day, permanent, recurring_days, month, excluded_dates
-            FROM tasks WHERE user_id = {uid}";
-                using (var cmd = new NpgsqlCommand(query, conn))
+            FROM tasks WHERE user_id = @uid";
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                
+                using (var command = new NpgsqlCommand(query, connection))
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    command.Parameters.AddWithValue("@uid", uid);
+
+                    using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
@@ -254,12 +311,14 @@ namespace WorkWithDataBase
                     var taskIds = tasks.Select(t => t.Id).ToList();
                     if (taskIds.Any())
                     {
-                        string compQuery = $@"
-                SELECT task_id, completion_date FROM task_completions
-                WHERE task_id = ANY(ARRAY[{string.Join(",", taskIds)}])";
-                        using (var cmd2 = new NpgsqlCommand(compQuery, conn))
+                        string compQuery = @"
+                            SELECT task_id, completion_date FROM task_completions
+                            WHERE task_id = ANY(ARRAY[@taskIds])";
+                        using (var command2 = new NpgsqlCommand(compQuery, connection))
                         {
-                            using (var compReader = cmd2.ExecuteReader())
+                            command2.Parameters.AddWithValue("@taskIds", taskIds.ToArray());
+
+                            using (var compReader = command2.ExecuteReader())
                             {
                                 while (compReader.Read())
                                 {
@@ -282,64 +341,59 @@ namespace WorkWithDataBase
                 return tasks;
             }
         }
-        // Метод проверки текущего пароля (авторизация по ID)
         public object AuthorizeUser(string userId, string password)
         {
-            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            if (!int.TryParse(userId, out int uid))
+                return null;
+            string query = "SELECT id FROM users WHERE id = @uid AND password = @password";
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
-                sqlConnection.Open();
-                // Проверяем, существует ли пользователь с таким ID и паролем
-                string query = "SELECT id FROM users WHERE id = @uid AND password = @password";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                connection.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                 {
-                    // Используем параметры для безопасности
-                    cmd.Parameters.AddWithValue("@uid", Convert.ToInt32(userId));
-                    cmd.Parameters.AddWithValue("@password", password);
+                    command.Parameters.AddWithValue("@uid", uid);
+                    command.Parameters.AddWithValue("@password", password);
 
-                    object result = cmd.ExecuteScalar();
+                    object result = command.ExecuteScalar();
 
-                    // Если нашли совпадение, возвращаем объект (id), иначе null
                     return result;
                 }
             }
         }
-
-        // Метод обновления пароля в базе данных
         public void ChangePassword(int uid, string newPassword)
         {
-            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            string query = "UPDATE users SET password = @newPassword WHERE id = @uid";
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
-                sqlConnection.Open();
-                string query = "UPDATE users SET password = @newPassword WHERE id = @uid";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, sqlConnection))
+                connection.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                 {
-                    cmd.Parameters.AddWithValue("@newPassword", newPassword);
-                    cmd.Parameters.AddWithValue("@uid", uid);
+                    command.Parameters.AddWithValue("@newPassword", newPassword);
+                    command.Parameters.AddWithValue("@uid", uid);
 
-                    cmd.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
         }
         public void DeleteUser(int uid)
         {
-            using (NpgsqlConnection sqlConnection = new NpgsqlConnection(connectionString))
+            string deleteTasksQuery = "DELETE FROM tasks WHERE user_id = @uid";
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
-                sqlConnection.Open();
-                // При удалении пользователя благодаря CASCADE в БД (если настроено) 
-                // удалятся и его задачи. На всякий случай удаляем явно, если связей нет.
-                string deleteTasksQuery = "DELETE FROM tasks WHERE user_id = @uid";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(deleteTasksQuery, sqlConnection))
+                connection.Open();
+                using (NpgsqlCommand command = new NpgsqlCommand(deleteTasksQuery, connection))
                 {
-                    cmd.Parameters.AddWithValue("@uid", uid);
-                    cmd.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@uid", uid);
+
+                    command.ExecuteNonQuery();
                 }
 
-                // Удаляем самого пользователя
                 string deleteUserQuery = "DELETE FROM users WHERE id = @uid";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(deleteUserQuery, sqlConnection))
+                using (NpgsqlCommand command = new NpgsqlCommand(deleteUserQuery, connection))
                 {
-                    cmd.Parameters.AddWithValue("@uid", uid);
-                    cmd.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@uid", uid);
+
+                    command.ExecuteNonQuery();
                 }
             }
         }
