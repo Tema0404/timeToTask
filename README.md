@@ -17,7 +17,7 @@
 - 🗄Все данные хранятся в PostgreSQL
 
 ## 🎥 *Видео работы*
-
+<img width="1920" height="1110" alt="Image" src="https://github.com/user-attachments/assets/3599abb2-8dc8-4da0-9c4d-ac9f0a9666dc" />
 
 ## ☎ *Контакты* 
 - Артем 
